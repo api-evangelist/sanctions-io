@@ -1,0 +1,171 @@
+aid: sanctions-io
+url: https://raw.githubusercontent.com/api-evangelist/sanctions-io/refs/heads/main/apis.yml
+name: sanctions.io
+kind: company
+description: sanctions.io is a sanctions, PEP, and criminal watchlist screening API
+  for AML (anti-money laundering) compliance. The REST API (base https://api.sanctions.io)
+  screens individuals, entities, vessels, and aircraft against 75+ sanctions lists
+  from 30+ jurisdictions (OFAC SDN and Non-SDN, EU, UN, HM Treasury, and more), over
+  one million politically exposed person (PEP) records, criminal watchlists like
+  Interpol Red Notices and FBI Most Wanted, and adverse media from 60,000+ news
+  sources. It supports real-time single screening, batch screening of up to 10,000
+  records per request, continuous monitoring with webhook alerts, and a full
+  sanctions database export, all behind Bearer token auth with Accept-header
+  versioning and a self-serve 7-day free trial.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Anti-Money Laundering
+- AML
+- Sanctions Screening
+- Compliance
+- PEP Screening
+- Watchlists
+- KYC
+- RegTech
+created: '2026-07-11'
+modified: '2026-07-11'
+specificationVersion: '0.19'
+apis:
+- aid: sanctions-io:sanctions-io-screening-api
+  name: sanctions.io Screening API
+  tags:
+  - Sanctions Screening
+  - AML
+  - PEP Screening
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: https://www.sanctions.io/solutions/screening-api
+    type: ProductPage
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: Real-time single screening via the search endpoint - query a name
+    (individual, entity, vessel, or aircraft) against selected sanctions, PEP, and
+    criminal watchlist sources and get back scored matches. Tune results with
+    min_score confidence (0.8-1.0), data_source short codes, entity_type, country,
+    date_of_birth, identifier, and name-match boosting. Average response time is
+    around 500-600ms for transaction and onboarding use cases.
+- aid: sanctions-io:sanctions-io-batch-screening-api
+  name: sanctions.io Batch Screening API
+  tags:
+  - Batch Screening
+  - AML
+  - Compliance
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: Screen up to 10,000 names in a single API request for large-scale
+    compliance checks such as periodic customer base audits, bulk vendor onboarding,
+    or regulatory reporting. Create, list, retrieve, and delete batch screenings and
+    fetch batch results; webhook events notify your systems when batch results are
+    ready.
+- aid: sanctions-io:sanctions-io-adverse-media-api
+  name: sanctions.io Adverse Media API
+  tags:
+  - Adverse Media
+  - Due Diligence
+  - AML
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: https://www.sanctions.io/data/adverse-media-screening
+    type: ProductPage
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: Search news articles related to specific individuals, entities, or
+    subjects using custom keywords, drawing on 60,000+ global news sources for due
+    diligence and AML compliance. Requires the version 3.0 Accept header; adverse
+    media can also be included in batch screening and monitoring by passing the
+    ADV-MEDIA data source short code.
+- aid: sanctions-io:sanctions-io-data-sources-api
+  name: sanctions.io Data Sources API
+  tags:
+  - Watchlists
+  - Data Sources
+  - Sanctions Lists
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: List all sanctions and watchlist sources available for screening -
+    each with the short_name code used in the data_source screening parameter
+    (OFAC SDN, EU CFSP, UK HM Treasury, FBI, FATF, Interpol, and dozens more).
+    A separate exporter endpoint returns a full CSV export of the sanctions and
+    crime database for plans that include it.
+- aid: sanctions-io:sanctions-io-monitoring-api
+  name: sanctions.io Monitoring API
+  tags:
+  - Continuous Monitoring
+  - Alerts
+  - AML
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: Continuously monitor customers, vendors, and counterparties against
+    watchlists - create and manage monitoring entries, list and filter them by
+    alerts and review status, and review or resolve monitoring results (for example
+    marking a match Real Positive). New matches or record updates raise alerts that
+    can be delivered to your systems by webhook.
+- aid: sanctions-io:sanctions-io-account-management-api
+  name: sanctions.io Account Management API
+  tags:
+  - Account Management
+  - API Tokens
+  - Webhooks
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://api-docs.sanctions.io/
+  baseURL: https://api.sanctions.io
+  properties:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+  - url: openapi/sanctions-io-openapi.yml
+    type: OpenAPI
+  description: Manage the account around your screening integration - create,
+    list, and delete API tokens, read and update company details and the company
+    config (including registering webhook endpoints secured with SHA-256
+    signatures), invite and manage users, view plan subscriptions, and count
+    screenings performed.
+common:
+- type: LinkedIn
+  url: https://www.linkedin.com/company/sanctions-io-llc
+- type: Website
+  url: https://www.sanctions.io
+- type: Documentation
+  url: https://api-docs.sanctions.io/
+- type: Pricing
+  url: https://www.sanctions.io/pricing-calculator
+- type: Signup
+  url: https://api.sanctions.io/users/signup
+- type: Blog
+  url: https://www.sanctions.io/blog
+- type: Support
+  url: https://help.sanctions.io/
+- type: Plans
+  url: plans/sanctions-io-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/sanctions-io-rate-limits.yml
+- type: FinOps
+  url: finops/sanctions-io-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

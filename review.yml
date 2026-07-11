@@ -1,0 +1,112 @@
+aid: sanctions-io
+name: sanctions.io
+review:
+  question: Does sanctions.io expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-11'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. The sanctions.io public surface is
+    request/response REST over HTTPS (Screening API v2.3 and Monitoring API
+    v3.1 at https://api.sanctions.io) plus outbound webhooks that POST JSON
+    event payloads to a customer-registered HTTPS endpoint. There is no
+    server-push transport (WebSocket or SSE) on sanctions.io's own API to
+    model. The only wss:// reference anywhere in the published documentation
+    is Intercom's chat-widget endpoint appearing inside Content-Security-Policy
+    headers of example HTTP responses - it is not a product API.
+findings:
+  summary: |
+    sanctions.io does not publish a documented public WebSocket API.
+    sanctions.io is a sanctions, PEP, and criminal watchlist screening service
+    for AML compliance. Its public API is REST over HTTPS at
+    https://api.sanctions.io, authenticated with a Bearer API token in the
+    Authorization header, with the API version selected via the Accept header
+    (for example "application/json; version=2.3"; adverse media requires
+    version=3.0). The current documented surface (api-docs.sanctions.io, a
+    Postman-published reference covering Screening API v2.3 and Monitoring API
+    v3.1) is request/response only: real-time search, batch screening (up to
+    10,000 records per request), adverse media search, data source listing,
+    database export, continuous monitoring CRUD, and account management.
+    Asynchronous notification is delivered exclusively through outbound
+    webhooks - sanctions.io POSTs JSON events (batch results ready, monitoring
+    alerts, account events) to a customer HTTPS endpoint registered via the
+    company/config endpoint or the user portal, signed with a SHA-256
+    x-sanctions-security header. No ws:// or wss:// endpoint of sanctions.io's
+    own is documented anywhere.
+  openSource: |
+    sanctions.io is a commercial SaaS - the platform and its watchlist,
+    PEP, and adverse media datasets are proprietary. There is no self-hosted
+    or open-source distribution. Access is self-serve: a 7-day free trial (no
+    credit card) at api.sanctions.io/users/signup issues a working API key,
+    and the docs also publish a shared test token that returns real but
+    partial data for integration testing.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.sanctions.io
+      documented: true
+      note: Screening API v2.3 and Monitoring API v3.1. Bearer token auth; API version chosen via the Accept header (application/json; version=X.Y).
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: Outbound POSTs of JSON events (batch screening, monitoring alerts, company/account events) to a customer-registered HTTPS endpoint, signed with a SHA-256 x-sanctions-security header plus x-sanctions-origin / x-sanctions-api-token headers. Registered via PUT /company/config/ or the user portal.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented. The only wss:// string in the docs is Intercom's chat widget (nexus-websocket-a.intercom.io) inside CSP headers of example responses.
+  endpointsConfirmedRest:
+    - GET    https://api.sanctions.io/search/
+    - GET    https://api.sanctions.io/search/batch/
+    - POST   https://api.sanctions.io/search/batch/
+    - GET    https://api.sanctions.io/search/batch/{batch_query_id}/
+    - DELETE https://api.sanctions.io/search/batch/{batch_query_id}/
+    - GET    https://api.sanctions.io/search/batch-result/{batch_result_id}/
+    - GET    https://api.sanctions.io/search/media/
+    - GET    https://api.sanctions.io/sources/
+    - GET    https://api.sanctions.io/exporter/
+    - POST   https://api.sanctions.io/monitoring/
+    - GET    https://api.sanctions.io/monitoring/
+    - GET    https://api.sanctions.io/monitoring/{monitoring_entry_id}/
+    - DELETE https://api.sanctions.io/monitoring/{monitoring_entry_id}/
+    - GET    https://api.sanctions.io/monitoring/result/{monitoring_result_id}/
+    - PUT    https://api.sanctions.io/monitoring/result/{monitoring_result_id}/
+    - GET    https://api.sanctions.io/tokens/
+    - POST   https://api.sanctions.io/tokens/
+    - DELETE https://api.sanctions.io/tokens/{token_key}
+    - GET    https://api.sanctions.io/company/
+    - PUT    https://api.sanctions.io/company/
+    - GET    https://api.sanctions.io/company/config/
+    - PUT    https://api.sanctions.io/company/config/
+    - GET    https://api.sanctions.io/user/
+    - POST   https://api.sanctions.io/user/
+    - GET    https://api.sanctions.io/user/{user_uuid}
+    - PATCH  https://api.sanctions.io/user/{user_uuid}
+    - DELETE https://api.sanctions.io/user/{user_uuid}
+    - GET    https://api.sanctions.io/plans/
+    - GET    https://api.sanctions.io/searches/count
+sources:
+  - url: https://api-docs.sanctions.io/
+    type: Documentation
+    note: Postman-published API reference - Screening API v2.3, Monitoring API v3.1, base https://api.sanctions.io. All endpoints request/response REST; webhooks section covers outbound events only.
+  - url: https://www.sanctions.io/
+    type: Website
+    note: Product overview - 75+ sanctions lists from 30+ jurisdictions, 1M+ PEP records, criminal watchlists, adverse media across 60,000+ news sources.
+  - url: https://help.sanctions.io/
+    type: Support
+    note: Knowledge base with implementation guide, best practices for screening parameters, and pricing plan articles.
+  - url: https://www.sanctions.io/pricing-calculator
+    type: Pricing
+    note: Volume-based pricing calculator (5,000 to 250,000+ screenings/year); custom proposal flow.
+  - url: https://app.swaggerhub.com/apis-docs/Sanctions.IO/sanctions-io_api
+    type: OpenAPI
+    note: Vendor-maintained OpenAPI 3.0 definitions on SwaggerHub for API versions 1.x-2.1 (older than the current Postman docs, but confirms the REST-only shape and Accept-header versioning).
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. sanctions.io's public API is
+    request/response REST (screening, batch, adverse media, sources, export,
+    monitoring, account management) and its only push mechanism is outbound
+    HTTPS webhooks to customer endpoints, which do not constitute a
+    subscribable server-push API transport to model in AsyncAPI.

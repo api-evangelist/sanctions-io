@@ -1,0 +1,395 @@
+{
+  "info": {
+    "name": "sanctions.io API",
+    "description": "Sanctions, PEP, and criminal watchlist screening for AML compliance. Covers the Screening API (v2.3) - real-time search, batch screening (up to 10,000 records per request), adverse media, data sources, database export - the Monitoring API (v3.1), and account management. Base URL: https://api.sanctions.io. All requests require a Bearer API token in the Authorization header; the API version is selected via the Accept header, e.g. 'application/json; version=2.3' (adverse media requires version=3.0). Sign up for a 7-day free trial at https://api.sanctions.io/users/signup.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{apiToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.sanctions.io", "type": "string" },
+    { "key": "apiToken", "value": "", "type": "string" },
+    { "key": "apiVersion", "value": "2.3", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Screening",
+      "item": [
+        {
+          "name": "Screen a name in real time",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/search/?name=Walter White&min_score=0.88&data_source=sdn,nonsdn&entity_type=individual&country=US&date_of_birth=1956-01-01",
+              "host": ["{{baseUrl}}"],
+              "path": ["search", ""],
+              "query": [
+                { "key": "name", "value": "Walter White", "description": "Primary name of the entity being screened (max 15 words). Required." },
+                { "key": "min_score", "value": "0.88", "description": "Minimum match confidence score, 0.8-1.0. Recommended starting value 0.88. Required." },
+                { "key": "data_source", "value": "sdn,nonsdn", "description": "Comma-separated watchlist short codes from the sources endpoint, or a Screening Collection. Required." },
+                { "key": "entity_type", "value": "individual", "description": "individual, entity, vessel, or aircraft. Strongly recommended." },
+                { "key": "country", "value": "US", "description": "ISO 3166-1 alpha-2 country. Optional." },
+                { "key": "date_of_birth", "value": "1956-01-01", "description": "YYYY-MM-DD. Strongly recommended for individuals and PEP screening." },
+                { "key": "identifier", "value": "", "description": "Passport, national ID, tax ID, email, domain, SWIFT, IMO, aircraft registration, or wallet address (max 120 chars). Optional.", "disabled": true },
+                { "key": "external_identifier", "value": "", "description": "Client-defined identifier returned in results. Optional.", "disabled": true },
+                { "key": "name_match_boosting_threshold", "value": "0.94", "description": "Optional boost threshold 0.8-1.0 (recommended 0.93-0.95).", "disabled": true }
+              ]
+            },
+            "description": "Queries the sanctions, criminal watchlist, and PEP databases in real time and returns scored matches with confidence_score, data_source, si_identifier, and the echoed search parameters."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Batch Screening",
+      "item": [
+        {
+          "name": "List batch screenings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/search/batch/", "host": ["{{baseUrl}}"], "path": ["search", "batch", ""] },
+            "description": "Lists batch screening requests submitted by your account."
+          }
+        },
+        {
+          "name": "Create a batch screening",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\"external_identifier\": \"customer-identifier-1\", \"name\": \"Walther White\", \"min_score\": \"0.88\", \"entity_type\": \"individual\", \"data_source\": \"sdn,nonsdn\"},\n  {\"external_identifier\": \"customer-identifier-2\", \"name\": \"Pied Piper\", \"entity_type\": \"entity\", \"min_score\": \"0.88\", \"data_source\": \"sdn,nonsdn\"}\n]"
+            },
+            "url": { "raw": "{{baseUrl}}/search/batch/", "host": ["{{baseUrl}}"], "path": ["search", "batch", ""] },
+            "description": "Screens up to 10,000 names in a single API request. Webhook events notify you when results are ready."
+          }
+        },
+        {
+          "name": "Retrieve a batch screening",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/search/batch/:batch_query_id/", "host": ["{{baseUrl}}"], "path": ["search", "batch", ":batch_query_id", ""], "variable": [{ "key": "batch_query_id", "value": "" }] },
+            "description": "Retrieves a batch screening request and its processing status by ID."
+          }
+        },
+        {
+          "name": "Delete a batch screening",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/search/batch/:batch_query_id/", "host": ["{{baseUrl}}"], "path": ["search", "batch", ":batch_query_id", ""], "variable": [{ "key": "batch_query_id", "value": "" }] },
+            "description": "Deletes a batch screening request by ID."
+          }
+        },
+        {
+          "name": "Get a batch screening result",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/search/batch-result/:batch_result_id/", "host": ["{{baseUrl}}"], "path": ["search", "batch-result", ":batch_result_id", ""], "variable": [{ "key": "batch_result_id", "value": "" }] },
+            "description": "Retrieves the results of a completed batch screening by result ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Adverse Media",
+      "item": [
+        {
+          "name": "Search adverse media",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version=3.0", "description": "This endpoint requires API version 3.0." }],
+            "url": {
+              "raw": "{{baseUrl}}/search/media/?name=Walter White",
+              "host": ["{{baseUrl}}"],
+              "path": ["search", "media", ""],
+              "query": [
+                { "key": "name", "value": "Walter White", "description": "Individual, entity, or subject to search news coverage for." },
+                { "key": "keywords", "value": "", "description": "Custom keywords to focus the search.", "disabled": true }
+              ]
+            },
+            "description": "Searches news articles across 60,000+ global sources for adverse media related to a subject. To include adverse media in batch screening or monitoring, pass ADV-MEDIA in data_source."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Sources",
+      "item": [
+        {
+          "name": "List data sources",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/sources/",
+              "host": ["{{baseUrl}}"],
+              "path": ["sources", ""],
+              "query": [{ "key": "page", "value": "1", "description": "Page number for paginated results.", "disabled": true }]
+            },
+            "description": "Paginated list of all sanctions and watchlist sources. Use each short_name as the code in the data_source screening parameter."
+          }
+        },
+        {
+          "name": "Export the sanctions database",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/exporter/", "host": ["{{baseUrl}}"], "path": ["exporter", ""] },
+            "description": "Full export of the sanctions and crime database as a CSV file. Requires a specific plan subscription."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monitoring",
+      "item": [
+        {
+          "name": "List monitoring entries",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/monitoring/",
+              "host": ["{{baseUrl}}"],
+              "path": ["monitoring", ""],
+              "query": [
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "page_size", "value": "25", "disabled": true },
+                { "key": "search", "value": "", "description": "Search term.", "disabled": true },
+                { "key": "alerts", "value": "true", "description": "Filter by open alerts.", "disabled": true },
+                { "key": "review_status", "value": "", "description": "Filter by review status.", "disabled": true }
+              ]
+            },
+            "description": "Lists monitored entities with pagination, search, and filters for alerts and review status."
+          }
+        },
+        {
+          "name": "Create a monitoring entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"min_score\": 0.88,\n  \"data_source\": \"sdn,nonsdn\",\n  \"name\": \"Walter White\",\n  \"country\": \"US\",\n  \"entity_type\": \"individual\",\n  \"date_of_birth\": \"1956-01-01\",\n  \"external_identifier\": \"ABC123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/monitoring/", "host": ["{{baseUrl}}"], "path": ["monitoring", ""] },
+            "description": "Adds an entity to continuous monitoring. New matches or record updates raise alerts, deliverable by webhook."
+          }
+        },
+        {
+          "name": "Get a monitoring entry",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/monitoring/:monitoring_entry_id/", "host": ["{{baseUrl}}"], "path": ["monitoring", ":monitoring_entry_id", ""], "variable": [{ "key": "monitoring_entry_id", "value": "" }] },
+            "description": "Retrieves a monitoring entry and its current match state by ID."
+          }
+        },
+        {
+          "name": "Delete a monitoring entry",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/monitoring/:monitoring_entry_id/", "host": ["{{baseUrl}}"], "path": ["monitoring", ":monitoring_entry_id", ""], "variable": [{ "key": "monitoring_entry_id", "value": "" }] },
+            "description": "Removes an entity from continuous monitoring."
+          }
+        },
+        {
+          "name": "Get a monitoring result",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/monitoring/result/:monitoring_result_id/", "host": ["{{baseUrl}}"], "path": ["monitoring", "result", ":monitoring_result_id", ""], "variable": [{ "key": "monitoring_result_id", "value": "" }] },
+            "description": "Retrieves the detail of a monitoring result (a match raised for a monitored entity)."
+          }
+        },
+        {
+          "name": "Update a monitoring result",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Real Positive\",\n  \"text\": \"Entity matches with sanctions record\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/monitoring/result/:monitoring_result_id/", "host": ["{{baseUrl}}"], "path": ["monitoring", "result", ":monitoring_result_id", ""], "variable": [{ "key": "monitoring_result_id", "value": "" }] },
+            "description": "Reviews or resolves a monitoring result, for example marking it as a Real Positive with reviewer notes."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account Management",
+      "item": [
+        {
+          "name": "List API tokens",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/tokens/", "host": ["{{baseUrl}}"], "path": ["tokens", ""] },
+            "description": "Lists the API tokens on your account."
+          }
+        },
+        {
+          "name": "Create an API token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/tokens/", "host": ["{{baseUrl}}"], "path": ["tokens", ""] },
+            "description": "Creates a new API token."
+          }
+        },
+        {
+          "name": "Delete an API token",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/tokens/:token_key", "host": ["{{baseUrl}}"], "path": ["tokens", ":token_key"], "variable": [{ "key": "token_key", "value": "" }] },
+            "description": "Deletes (revokes) an API token by key."
+          }
+        },
+        {
+          "name": "Get company",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/company/", "host": ["{{baseUrl}}"], "path": ["company", ""] },
+            "description": "Retrieves your company details."
+          }
+        },
+        {
+          "name": "Edit company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/company/", "host": ["{{baseUrl}}"], "path": ["company", ""] },
+            "description": "Updates your company details."
+          }
+        },
+        {
+          "name": "Get company config",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/company/config/", "host": ["{{baseUrl}}"], "path": ["company", "config", ""] },
+            "description": "Retrieves the company configuration, including any registered webhook endpoint."
+          }
+        },
+        {
+          "name": "Edit company config (register webhook)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"webhook_url\": \"https://yourcompany.com/webhooks/sanctions\"\n}" },
+            "url": { "raw": "{{baseUrl}}/company/config/", "host": ["{{baseUrl}}"], "path": ["company", "config", ""] },
+            "description": "Updates the company configuration, including registering the webhook endpoint. Webhook creation returns a hash_secret used to verify the SHA-256 x-sanctions-security signature on delivered events; the secret cannot be retrieved later."
+          }
+        },
+        {
+          "name": "List company users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/user/?page=1&page_size=25",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", ""],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "25" }
+              ]
+            },
+            "description": "Lists the users on your company account."
+          }
+        },
+        {
+          "name": "Invite a user",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/user/", "host": ["{{baseUrl}}"], "path": ["user", ""] },
+            "description": "Invites a new user to your company account."
+          }
+        },
+        {
+          "name": "Get a user",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/user/:user_uuid", "host": ["{{baseUrl}}"], "path": ["user", ":user_uuid"], "variable": [{ "key": "user_uuid", "value": "" }] },
+            "description": "Retrieves a company user by UUID."
+          }
+        },
+        {
+          "name": "Update a user",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json; version={{apiVersion}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/user/:user_uuid", "host": ["{{baseUrl}}"], "path": ["user", ":user_uuid"], "variable": [{ "key": "user_uuid", "value": "" }] },
+            "description": "Updates a company user by UUID."
+          }
+        },
+        {
+          "name": "Delete a user",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/user/:user_uuid", "host": ["{{baseUrl}}"], "path": ["user", ":user_uuid"], "variable": [{ "key": "user_uuid", "value": "" }] },
+            "description": "Deletes a company user by UUID."
+          }
+        },
+        {
+          "name": "Manage subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/plans/", "host": ["{{baseUrl}}"], "path": ["plans", ""] },
+            "description": "Retrieves the plan subscriptions on your account."
+          }
+        },
+        {
+          "name": "Count screenings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json; version={{apiVersion}}" }],
+            "url": { "raw": "{{baseUrl}}/searches/count", "host": ["{{baseUrl}}"], "path": ["searches", "count"] },
+            "description": "Returns the count of screenings performed by your account, for usage tracking against plan volume."
+          }
+        }
+      ]
+    }
+  ]
+}

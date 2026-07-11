@@ -1,0 +1,329 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{apiToken}}"
+    },
+    "headers": [
+      { "name": "Accept", "value": "application/json; version=2.3", "description": "Selects the API version. Adverse media requires version=3.0." }
+    ]
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Screening",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Screen a name in real time.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/",
+            "params": [
+              { "name": "name", "value": "Walter White", "type": "query", "description": "Primary name of the entity being screened (max 15 words). Required." },
+              { "name": "min_score", "value": "0.88", "type": "query", "description": "Minimum match confidence score, 0.8-1.0. Required." },
+              { "name": "data_source", "value": "sdn,nonsdn", "type": "query", "description": "Comma-separated watchlist short codes. Required." },
+              { "name": "entity_type", "value": "individual", "type": "query", "description": "individual, entity, vessel, or aircraft." },
+              { "name": "country", "value": "US", "type": "query", "description": "ISO 3166-1 alpha-2 country." },
+              { "name": "date_of_birth", "value": "1956-01-01", "type": "query", "description": "YYYY-MM-DD; recommended for individuals." }
+            ]
+          },
+          "docs": "Queries the sanctions, criminal watchlist, and PEP databases in real time and returns scored matches."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batch Screening",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "List batch screenings.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/search/batch/" },
+          "docs": "Lists batch screening requests submitted by your account."
+        },
+        {
+          "info": { "name": "Create a batch screening.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/search/batch/",
+            "body": { "type": "json", "data": "[{\"external_identifier\": \"customer-identifier-1\", \"name\": \"Walther White\", \"min_score\": \"0.88\", \"entity_type\": \"individual\", \"data_source\": \"sdn,nonsdn\"}]" }
+          },
+          "docs": "Screens up to 10,000 names in a single API request. Webhook events notify you when results are ready."
+        },
+        {
+          "info": { "name": "Retrieve a batch screening.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/batch/:batch_query_id/",
+            "params": [
+              { "name": "batch_query_id", "value": "", "type": "path", "description": "The batch screening identifier." }
+            ]
+          },
+          "docs": "Retrieves a batch screening request and its processing status by ID."
+        },
+        {
+          "info": { "name": "Delete a batch screening.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/search/batch/:batch_query_id/",
+            "params": [
+              { "name": "batch_query_id", "value": "", "type": "path", "description": "The batch screening identifier." }
+            ]
+          },
+          "docs": "Deletes a batch screening request by ID."
+        },
+        {
+          "info": { "name": "Get a batch screening result.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/batch-result/:batch_result_id/",
+            "params": [
+              { "name": "batch_result_id", "value": "", "type": "path", "description": "The batch result identifier." }
+            ]
+          },
+          "docs": "Retrieves the results of a completed batch screening by result ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Adverse Media",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Search adverse media.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/media/",
+            "headers": [
+              { "name": "Accept", "value": "application/json; version=3.0", "description": "This endpoint requires API version 3.0." }
+            ],
+            "params": [
+              { "name": "name", "value": "Walter White", "type": "query", "description": "Individual, entity, or subject to search news coverage for." },
+              { "name": "keywords", "value": "", "type": "query", "description": "Custom keywords to focus the search." }
+            ]
+          },
+          "docs": "Searches news articles across 60,000+ global sources for adverse media. Include ADV-MEDIA in data_source to add adverse media to batch screening or monitoring."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Sources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "List data sources.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/sources/",
+            "params": [
+              { "name": "page", "value": "1", "type": "query", "description": "Page number for paginated results." }
+            ]
+          },
+          "docs": "Paginated list of all sanctions and watchlist sources. Use each short_name as the code in the data_source screening parameter."
+        },
+        {
+          "info": { "name": "Export the sanctions database.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/exporter/" },
+          "docs": "Full export of the sanctions and crime database as a CSV file. Requires a specific plan subscription."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Monitoring",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "List monitoring entries.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/",
+            "params": [
+              { "name": "page", "value": "1", "type": "query", "description": "Page number." },
+              { "name": "alerts", "value": "true", "type": "query", "description": "Filter by open alerts." },
+              { "name": "review_status", "value": "", "type": "query", "description": "Filter by review status." }
+            ]
+          },
+          "docs": "Lists monitored entities with pagination, search, and filters for alerts and review status."
+        },
+        {
+          "info": { "name": "Create a monitoring entry.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/monitoring/",
+            "body": { "type": "json", "data": "{\"min_score\": 0.88, \"data_source\": \"sdn,nonsdn\", \"name\": \"Walter White\", \"country\": \"US\", \"entity_type\": \"individual\", \"date_of_birth\": \"1956-01-01\", \"external_identifier\": \"ABC123\"}" }
+          },
+          "docs": "Adds an entity to continuous monitoring. New matches or record updates raise alerts, deliverable by webhook."
+        },
+        {
+          "info": { "name": "Get a monitoring entry.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/:monitoring_entry_id/",
+            "params": [
+              { "name": "monitoring_entry_id", "value": "", "type": "path", "description": "The monitoring entry identifier." }
+            ]
+          },
+          "docs": "Retrieves a monitoring entry and its current match state by ID."
+        },
+        {
+          "info": { "name": "Delete a monitoring entry.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/monitoring/:monitoring_entry_id/",
+            "params": [
+              { "name": "monitoring_entry_id", "value": "", "type": "path", "description": "The monitoring entry identifier." }
+            ]
+          },
+          "docs": "Removes an entity from continuous monitoring."
+        },
+        {
+          "info": { "name": "Get a monitoring result.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/result/:monitoring_result_id/",
+            "params": [
+              { "name": "monitoring_result_id", "value": "", "type": "path", "description": "The monitoring result identifier." }
+            ]
+          },
+          "docs": "Retrieves the detail of a monitoring result (a match raised for a monitored entity)."
+        },
+        {
+          "info": { "name": "Update a monitoring result.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.sanctions.io/monitoring/result/:monitoring_result_id/",
+            "params": [
+              { "name": "monitoring_result_id", "value": "", "type": "path", "description": "The monitoring result identifier." }
+            ],
+            "body": { "type": "json", "data": "{\"status\": \"Real Positive\", \"text\": \"Entity matches with sanctions record\"}" }
+          },
+          "docs": "Reviews or resolves a monitoring result, for example marking it as a Real Positive."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "List API tokens.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/tokens/" },
+          "docs": "Lists the API tokens on your account."
+        },
+        {
+          "info": { "name": "Create an API token.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sanctions.io/tokens/" },
+          "docs": "Creates a new API token."
+        },
+        {
+          "info": { "name": "Delete an API token.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/tokens/:token_key",
+            "params": [
+              { "name": "token_key", "value": "", "type": "path", "description": "The key of the token to delete." }
+            ]
+          },
+          "docs": "Deletes (revokes) an API token by key."
+        },
+        {
+          "info": { "name": "Get company.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/company/" },
+          "docs": "Retrieves your company details."
+        },
+        {
+          "info": { "name": "Edit company.", "type": "http" },
+          "http": { "method": "PUT", "url": "https://api.sanctions.io/company/", "body": { "type": "json", "data": "{}" } },
+          "docs": "Updates your company details."
+        },
+        {
+          "info": { "name": "Get company config.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/company/config/" },
+          "docs": "Retrieves the company configuration, including any registered webhook endpoint."
+        },
+        {
+          "info": { "name": "Edit company config (register webhook).", "type": "http" },
+          "http": { "method": "PUT", "url": "https://api.sanctions.io/company/config/", "body": { "type": "json", "data": "{\"webhook_url\": \"https://yourcompany.com/webhooks/sanctions\"}" } },
+          "docs": "Updates the company configuration, including registering the webhook endpoint. Webhook creation returns a hash_secret used to verify the SHA-256 x-sanctions-security signature; it cannot be retrieved later."
+        },
+        {
+          "info": { "name": "List company users.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/user/",
+            "params": [
+              { "name": "page", "value": "1", "type": "query" },
+              { "name": "page_size", "value": "25", "type": "query" }
+            ]
+          },
+          "docs": "Lists the users on your company account."
+        },
+        {
+          "info": { "name": "Invite a user.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sanctions.io/user/", "body": { "type": "json", "data": "{}" } },
+          "docs": "Invites a new user to your company account."
+        },
+        {
+          "info": { "name": "Get a user.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "params": [
+              { "name": "user_uuid", "value": "", "type": "path", "description": "The user UUID." }
+            ]
+          },
+          "docs": "Retrieves a company user by UUID."
+        },
+        {
+          "info": { "name": "Update a user.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "params": [
+              { "name": "user_uuid", "value": "", "type": "path", "description": "The user UUID." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates a company user by UUID."
+        },
+        {
+          "info": { "name": "Delete a user.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "params": [
+              { "name": "user_uuid", "value": "", "type": "path", "description": "The user UUID." }
+            ]
+          },
+          "docs": "Deletes a company user by UUID."
+        },
+        {
+          "info": { "name": "Manage subscriptions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/plans/" },
+          "docs": "Retrieves the plan subscriptions on your account."
+        },
+        {
+          "info": { "name": "Count screenings.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sanctions.io/searches/count" },
+          "docs": "Returns the count of screenings performed by your account, for usage tracking against plan volume."
+        }
+      ]
+    }
+  ]
+}

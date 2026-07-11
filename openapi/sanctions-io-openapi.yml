@@ -1,0 +1,980 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io API
+  description: >-
+    The sanctions.io API provides sanctions, PEP (politically exposed persons),
+    and criminal watchlist screening for AML compliance. It covers the
+    Screening API (v2.3) - real-time single search, batch screening of up to
+    10,000 records per request, adverse media search, data source listing, and
+    full database export - and the Monitoring API (v3.1) for continuous
+    monitoring with alerts, plus account management (tokens, company and
+    webhook configuration, users, plans, usage). All requests require a Bearer
+    API token in the Authorization header; the API version is selected with
+    the Accept header, for example "application/json; version=2.3" (the
+    adverse media endpoint requires version=3.0). Sign up for a self-serve
+    7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+  - url: https://api.sanctions.io
+    description: Production
+security:
+  - bearerAuth: []
+tags:
+  - name: Screening
+    description: Real-time single screening against sanctions, PEP, and criminal watchlists.
+  - name: Batch Screening
+    description: Screen up to 10,000 names in a single request.
+  - name: Adverse Media
+    description: Keyword search of news articles for adverse media screening (requires Accept version=3.0).
+  - name: Data Sources
+    description: Sanctions and watchlist sources available for screening, and database export.
+  - name: Monitoring
+    description: Continuous monitoring entries, alerts, and result review.
+  - name: Account Management
+    description: API tokens, company and webhook configuration, users, plans, and usage.
+paths:
+  /search/:
+    get:
+      operationId: createScreeningRequest
+      tags:
+        - Screening
+      summary: Screen a name in real time
+      description: >-
+        Queries the sanctions, criminal watchlist, and PEP databases for a
+        name and returns scored matches. Supports individuals, entities,
+        vessels, and aircraft. Results include the confidence score, matched
+        record details, the originating data source, and the echoed search
+        parameters.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - name: name
+          in: query
+          required: true
+          description: Primary name of the entity being screened (maximum 15 words). Full legal name for individuals; registered name for organizations.
+          schema:
+            type: string
+            example: Walter White
+        - name: min_score
+          in: query
+          required: true
+          description: Minimum match confidence score (0.8-1.0) for a result to count as a match. Recommended starting value 0.88; 0.93 for stricter matching.
+          schema:
+            type: number
+            format: float
+            minimum: 0.8
+            maximum: 1.0
+            example: 0.88
+        - name: data_source
+          in: query
+          required: true
+          description: Comma-separated watchlist short codes (from the sources endpoint) or a Screening Collection, e.g. "sdn,nonsdn,uk-sanctions". Include ADV-MEDIA to add adverse media.
+          schema:
+            type: string
+            example: sdn,nonsdn
+        - name: entity_type
+          in: query
+          required: false
+          description: Type of the screened entity. Strongly recommended to improve performance and match accuracy.
+          schema:
+            type: string
+            enum:
+              - individual
+              - entity
+              - vessel
+              - aircraft
+        - name: country
+          in: query
+          required: false
+          description: ISO 3166-1 alpha-2 country associated with the entity (nationality/residence for individuals, incorporation/operating country for organizations).
+          schema:
+            type: string
+            example: US
+        - name: date_of_birth
+          in: query
+          required: false
+          description: Date of birth (YYYY-MM-DD). Strongly recommended for individuals, particularly for PEP screening.
+          schema:
+            type: string
+            format: date
+            example: '1956-01-01'
+        - name: identifier
+          in: query
+          required: false
+          description: Additional identifier (passport number, national ID, tax ID, email, company domain, SWIFT code, IMO number, aircraft registration, wallet address; max 120 characters) screened in parallel with the name.
+          schema:
+            type: string
+            maxLength: 120
+        - name: external_identifier
+          in: query
+          required: false
+          description: Client-defined identifier stored and returned in results so alerts map back to your internal records.
+          schema:
+            type: string
+            example: ABC123
+        - name: name_match_boosting_threshold
+          in: query
+          required: false
+          description: Optional threshold (0.8-1.0, recommended 0.93-0.95) above which high-confidence name matches are boosted in the overall confidence score.
+          schema:
+            type: number
+            format: float
+            minimum: 0.8
+            maximum: 1.0
+            example: 0.94
+      responses:
+        '200':
+          description: Paginated screening matches plus the echoed search parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /search/batch/:
+    get:
+      operationId: listBatchScreenings
+      tags:
+        - Batch Screening
+      summary: List batch screenings
+      description: Returns a paginated list of batch screening requests submitted by your account.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: Paginated list of batch screenings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createBatchScreening
+      tags:
+        - Batch Screening
+      summary: Create a batch screening
+      description: >-
+        Screens up to 10,000 names in a single API request - ideal for
+        periodic customer base audits, bulk vendor onboarding, or regulatory
+        reporting. Each record supports the same parameters as real-time
+        screening. Webhook events notify you when batch results are ready.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              maxItems: 10000
+              items:
+                $ref: '#/components/schemas/BatchScreeningRecord'
+            example:
+              - external_identifier: customer-identifier-1
+                name: Walther White
+                min_score: '0.88'
+                entity_type: individual
+                data_source: FSL
+              - external_identifier: customer-identifier-2
+                name: Pied Piper
+                entity_type: entity
+                min_score: '0.88'
+                data_source: FSL
+      responses:
+        '201':
+          description: Batch screening accepted for processing.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /search/batch/{batch_query_id}/:
+    get:
+      operationId: retrieveBatchScreening
+      tags:
+        - Batch Screening
+      summary: Retrieve a batch screening
+      description: Retrieves a batch screening request and its processing status by ID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/batchQueryId'
+      responses:
+        '200':
+          description: Batch screening detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteBatchScreening
+      tags:
+        - Batch Screening
+      summary: Delete a batch screening
+      description: Deletes a batch screening request by ID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/batchQueryId'
+      responses:
+        '204':
+          description: Batch screening deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /search/batch-result/{batch_result_id}/:
+    get:
+      operationId: getBatchScreeningResult
+      tags:
+        - Batch Screening
+      summary: Get a batch screening result
+      description: Retrieves the results of a completed batch screening by result ID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - name: batch_result_id
+          in: path
+          required: true
+          description: The batch result identifier.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Batch screening results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /search/media/:
+    get:
+      operationId: searchAdverseMedia
+      tags:
+        - Adverse Media
+      summary: Search adverse media
+      description: >-
+        Searches news articles related to specific individuals, entities, or
+        subjects using custom keywords, across 60,000+ global news sources.
+        Requires the Accept header "application/json; version=3.0". To include
+        adverse media in batch screening or monitoring, pass the ADV-MEDIA
+        short code in data_source.
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          description: Must be "application/json; version=3.0" for this endpoint.
+          schema:
+            type: string
+            example: application/json; version=3.0
+        - name: name
+          in: query
+          required: true
+          description: Name of the individual, entity, or subject to search news coverage for.
+          schema:
+            type: string
+        - name: keywords
+          in: query
+          required: false
+          description: Custom keywords to focus the adverse media search on relevant risk topics.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching news articles with source and relevance details.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /sources/:
+    get:
+      operationId: listDataSources
+      tags:
+        - Data Sources
+      summary: List data sources
+      description: >-
+        Returns a paginated list of all sanctions and watchlist sources
+        available for screening. Use each result's short_name as the short
+        code in the data_source screening parameter (multiple values
+        comma-separated). Some sources include a notes field with usage
+        guidance.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: Paginated list of data sources.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 49
+                  next:
+                    type: string
+                    nullable: true
+                    example: https://api.sanctions.io/sources/?page=2
+                  previous:
+                    type: string
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DataSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /exporter/:
+    get:
+      operationId: exportSanctionsDatabase
+      tags:
+        - Data Sources
+      summary: Export the sanctions database
+      description: >-
+        Returns a full export of the sanctions and crime database as a CSV
+        file. A specific plan subscription is required to access this
+        endpoint.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: CSV export of the sanctions and crime database.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /monitoring/:
+    get:
+      operationId: getMonitoringList
+      tags:
+        - Monitoring
+      summary: List monitoring entries
+      description: >-
+        Returns the list of monitored entities. Supports pagination and search,
+        filtering by alerts, review status, and combined filters.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/page'
+        - name: page_size
+          in: query
+          required: false
+          description: Number of entries per page.
+          schema:
+            type: integer
+        - name: search
+          in: query
+          required: false
+          description: Search term to filter monitoring entries.
+          schema:
+            type: string
+        - name: alerts
+          in: query
+          required: false
+          description: Filter entries by whether they have open alerts.
+          schema:
+            type: boolean
+        - name: review_status
+          in: query
+          required: false
+          description: Filter entries by review status.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of monitoring entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createMonitoringEntry
+      tags:
+        - Monitoring
+      summary: Create a monitoring entry
+      description: >-
+        Adds an entity to continuous monitoring. The entity is re-screened
+        against the selected data sources as lists update, and new matches or
+        record changes raise alerts (deliverable by webhook).
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringEntryCreate'
+            example:
+              min_score: 0.88
+              data_source: sdn,nonsdn
+              name: Walter White
+              country: US
+              entity_type: individual
+              date_of_birth: '1956-01-01'
+              external_identifier: ABC123
+      responses:
+        '201':
+          description: Monitoring entry created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /monitoring/{monitoring_entry_id}/:
+    get:
+      operationId: getMonitoringEntryDetail
+      tags:
+        - Monitoring
+      summary: Get a monitoring entry
+      description: Retrieves a monitoring entry and its current match state by ID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/monitoringEntryId'
+      responses:
+        '200':
+          description: Monitoring entry detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteMonitoringEntry
+      tags:
+        - Monitoring
+      summary: Delete a monitoring entry
+      description: Removes an entity from continuous monitoring.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/monitoringEntryId'
+      responses:
+        '204':
+          description: Monitoring entry deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /monitoring/result/{monitoring_result_id}/:
+    get:
+      operationId: getMonitoringResultDetail
+      tags:
+        - Monitoring
+      summary: Get a monitoring result
+      description: Retrieves the detail of a monitoring result (a match raised for a monitored entity) by ID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/monitoringResultId'
+      responses:
+        '200':
+          description: Monitoring result detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateMonitoringResult
+      tags:
+        - Monitoring
+      summary: Update a monitoring result
+      description: Reviews or resolves a monitoring result, for example marking it as a Real Positive with reviewer notes.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/monitoringResultId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: Real Positive
+                text:
+                  type: string
+                  example: Entity matches with sanctions record
+      responses:
+        '200':
+          description: Monitoring result updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /tokens/:
+    get:
+      operationId: listApiTokens
+      tags:
+        - Account Management
+      summary: List API tokens
+      description: Lists the API tokens on your account.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: List of API tokens.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createApiToken
+      tags:
+        - Account Management
+      summary: Create an API token
+      description: Creates a new API token for your account.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '201':
+          description: API token created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /tokens/{token_key}:
+    delete:
+      operationId: deleteApiToken
+      tags:
+        - Account Management
+      summary: Delete an API token
+      description: Deletes (revokes) an API token by key.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - name: token_key
+          in: path
+          required: true
+          description: The key of the token to delete.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: API token deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /company/:
+    get:
+      operationId: getCompany
+      tags:
+        - Account Management
+      summary: Get company
+      description: Retrieves your company details.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: editCompany
+      tags:
+        - Account Management
+      summary: Edit company
+      description: Updates your company details.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /company/config/:
+    get:
+      operationId: getCompanyConfig
+      tags:
+        - Account Management
+      summary: Get company config
+      description: Retrieves the company configuration, including any registered webhook endpoint.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company configuration.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: editCompanyConfig
+      tags:
+        - Account Management
+      summary: Edit company config
+      description: >-
+        Updates the company configuration, including registering or changing
+        the webhook endpoint URL. Webhook creation returns a hash_secret used
+        to verify the SHA-256 x-sanctions-security signature on delivered
+        events; the secret cannot be retrieved again later.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company configuration updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /user/:
+    get:
+      operationId: listCompanyUsers
+      tags:
+        - Account Management
+      summary: List company users
+      description: Lists the users on your company account, with pagination.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/page'
+        - name: page_size
+          in: query
+          required: false
+          description: Number of users per page.
+          schema:
+            type: integer
+            example: 25
+      responses:
+        '200':
+          description: Paginated list of users.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: inviteUser
+      tags:
+        - Account Management
+      summary: Invite a user
+      description: Invites a new user to your company account.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '201':
+          description: User invited.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /user/{user_uuid}:
+    get:
+      operationId: getUser
+      tags:
+        - Account Management
+      summary: Get a user
+      description: Retrieves a company user by UUID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/userUuid'
+      responses:
+        '200':
+          description: User detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateUser
+      tags:
+        - Account Management
+      summary: Update a user
+      description: Updates a company user by UUID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/userUuid'
+      responses:
+        '200':
+          description: User updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteUser
+      tags:
+        - Account Management
+      summary: Delete a user
+      description: Deletes a company user by UUID.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+        - $ref: '#/components/parameters/userUuid'
+      responses:
+        '204':
+          description: User deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /plans/:
+    get:
+      operationId: manageSubscriptions
+      tags:
+        - Account Management
+      summary: Manage subscriptions
+      description: Retrieves the plan subscriptions on your account.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Plan subscriptions.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /searches/count:
+    get:
+      operationId: listScreeningsCount
+      tags:
+        - Account Management
+      summary: Count screenings
+      description: Returns the count of screenings performed by your account, for usage tracking against plan volume.
+      parameters:
+        - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Screening count.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        API token from the sanctions.io user portal, passed as "Authorization:
+        Bearer {token}". The token may also be sent as a URL parameter, but
+        the Authorization header is recommended.
+  parameters:
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: >-
+        Selects the API version, e.g. "application/json; version=2.3".
+        Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+    batchQueryId:
+      name: batch_query_id
+      in: path
+      required: true
+      description: The batch screening identifier.
+      schema:
+        type: string
+    monitoringEntryId:
+      name: monitoring_entry_id
+      in: path
+      required: true
+      description: The monitoring entry identifier.
+      schema:
+        type: string
+    monitoringResultId:
+      name: monitoring_result_id
+      in: path
+      required: true
+      description: The monitoring result identifier.
+      schema:
+        type: string
+    userUuid:
+      name: user_uuid
+      in: path
+      required: true
+      description: The user UUID.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: Too many requests or the plan does not permit this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+    PaginatedList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            type: object
+    DataSource:
+      type: object
+      properties:
+        short_name:
+          type: string
+          description: Short code used in the data_source screening parameter.
+          example: HM TREASURY
+        name:
+          type: string
+          example: UK Sanctions List (HM Treasury)
+        notes:
+          type: string
+          description: Optional usage guidance, such as recommending a source be combined with another.
+    ScreeningMatch:
+      type: object
+      properties:
+        confidence_score:
+          type: number
+          format: float
+          example: 1.0
+        name:
+          type: string
+        alt_names:
+          type: array
+          items:
+            type: string
+        entity_type:
+          type: string
+          example: Entity
+        address:
+          type: array
+          items:
+            type: string
+        country_residence:
+          type: array
+          items:
+            type: string
+        nationality:
+          type: array
+          items:
+            type: string
+        data_source:
+          type: object
+          properties:
+            name:
+              type: string
+            short_name:
+              type: string
+        remarks:
+          type: string
+        si_identifier:
+          type: string
+          description: sanctions.io-specific unique identifier for the record.
+        first_import:
+          type: string
+          format: date-time
+        last_update:
+          type: string
+          format: date-time
+        data_hash:
+          type: string
+          description: Changes when the underlying record changes.
+    ScreeningResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningMatch'
+        search:
+          type: object
+          properties:
+            params:
+              type: object
+            timestamp:
+              type: string
+              format: date-time
+            api_version:
+              type: string
+              example: '2.3'
+            id:
+              type: string
+              format: uuid
+    BatchScreeningRecord:
+      type: object
+      required:
+        - name
+        - min_score
+        - data_source
+      properties:
+        external_identifier:
+          type: string
+        name:
+          type: string
+        min_score:
+          type: string
+          example: '0.88'
+        entity_type:
+          type: string
+          enum:
+            - individual
+            - entity
+            - vessel
+            - aircraft
+        data_source:
+          type: string
+        country:
+          type: string
+        date_of_birth:
+          type: string
+          format: date
+        identifier:
+          type: string
+        name_match_boosting_threshold:
+          type: number
+          format: float
+    MonitoringEntryCreate:
+      type: object
+      required:
+        - name
+        - min_score
+        - data_source
+      properties:
+        min_score:
+          type: number
+          format: float
+          example: 0.88
+        data_source:
+          type: string
+          example: sdn,nonsdn
+        name:
+          type: string
+          example: Walter White
+        country:
+          type: string
+          example: US
+        entity_type:
+          type: string
+          enum:
+            - individual
+            - entity
+            - vessel
+            - aircraft
+        date_of_birth:
+          type: string
+          format: date
+          example: '1956-01-01'
+        identifier:
+          type: string
+        external_identifier:
+          type: string
+          example: ABC123
+        name_match_boosting_threshold:
+          type: number
+          format: float
