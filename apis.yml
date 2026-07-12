@@ -146,6 +146,10 @@ apis:
     signatures), invite and manage users, view plan subscriptions, and count
     screenings performed.
 common:
+- type: DomainSecurity
+  url: security/sanctions-io-domain-security.yml
+- type: Authentication
+  url: authentication/sanctions-io-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/sanctions-io-llc
 - type: Website

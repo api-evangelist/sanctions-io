@@ -1,0 +1,32 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.sanctions.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  3 05:17:41 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api-docs.sanctions.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 16 17:51:34 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.sanctions.io
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Sep 23 23:59:59 2026 GMT
+  hsts: true
+  hsts_max_age: 86400
+domains:
+- domain: sanctions.io
+  dnssec: false
+  caa:
+  - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog"
+  - 0 issue "amazon.com"
+  spf: false
+  dmarc: true
+  dmarc_policy: none

@@ -1,0 +1,15 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/sanctions-io-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer
+    {token}". The token may also be sent as a URL parameter, but the Authorization header is
+    recommended.'
+  sources:
+  - openapi/sanctions-io-openapi.yml
