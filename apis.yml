@@ -146,6 +146,8 @@ apis:
     signatures), invite and manage users, view plan subscriptions, and count
     screenings performed.
 common:
+- type: AgenticAccess
+  url: agentic-access/sanctions-io-agentic-access.yml
 - type: DomainSecurity
   url: security/sanctions-io-domain-security.yml
 - type: Authentication
