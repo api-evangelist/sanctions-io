@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io Account Management Screening API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+- url: https://api.sanctions.io
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Screening
+  description: Real-time single screening against sanctions, PEP, and criminal watchlists.
+paths:
+  /search/:
+    get:
+      operationId: createScreeningRequest
+      tags:
+      - Screening
+      summary: Screen a name in real time
+      description: Queries the sanctions, criminal watchlist, and PEP databases for a name and returns scored matches. Supports individuals, entities, vessels, and aircraft. Results include the confidence score, matched record details, the originating data source, and the echoed search parameters.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - name: name
+        in: query
+        required: true
+        description: Primary name of the entity being screened (maximum 15 words). Full legal name for individuals; registered name for organizations.
+        schema:
+          type: string
+          example: Walter White
+      - name: min_score
+        in: query
+        required: true
+        description: Minimum match confidence score (0.8-1.0) for a result to count as a match. Recommended starting value 0.88; 0.93 for stricter matching.
+        schema:
+          type: number
+          format: float
+          minimum: 0.8
+          maximum: 1.0
+          example: 0.88
+      - name: data_source
+        in: query
+        required: true
+        description: Comma-separated watchlist short codes (from the sources endpoint) or a Screening Collection, e.g. "sdn,nonsdn,uk-sanctions". Include ADV-MEDIA to add adverse media.
+        schema:
+          type: string
+          example: sdn,nonsdn
+      - name: entity_type
+        in: query
+        required: false
+        description: Type of the screened entity. Strongly recommended to improve performance and match accuracy.
+        schema:
+          type: string
+          enum:
+          - individual
+          - entity
+          - vessel
+          - aircraft
+      - name: country
+        in: query
+        required: false
+        description: ISO 3166-1 alpha-2 country associated with the entity (nationality/residence for individuals, incorporation/operating country for organizations).
+        schema:
+          type: string
+          example: US
+      - name: date_of_birth
+        in: query
+        required: false
+        description: Date of birth (YYYY-MM-DD). Strongly recommended for individuals, particularly for PEP screening.
+        schema:
+          type: string
+          format: date
+          example: '1956-01-01'
+      - name: identifier
+        in: query
+        required: false
+        description: Additional identifier (passport number, national ID, tax ID, email, company domain, SWIFT code, IMO number, aircraft registration, wallet address; max 120 characters) screened in parallel with the name.
+        schema:
+          type: string
+          maxLength: 120
+      - name: external_identifier
+        in: query
+        required: false
+        description: Client-defined identifier stored and returned in results so alerts map back to your internal records.
+        schema:
+          type: string
+          example: ABC123
+      - name: name_match_boosting_threshold
+        in: query
+        required: false
+        description: Optional threshold (0.8-1.0, recommended 0.93-0.95) above which high-confidence name matches are boosted in the overall confidence score.
+        schema:
+          type: number
+          format: float
+          minimum: 0.8
+          maximum: 1.0
+          example: 0.94
+      responses:
+        '200':
+          description: Paginated screening matches plus the echoed search parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    ScreeningResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningMatch'
+        search:
+          type: object
+          properties:
+            params:
+              type: object
+            timestamp:
+              type: string
+              format: date-time
+            api_version:
+              type: string
+              example: '2.3'
+            id:
+              type: string
+              format: uuid
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+    ScreeningMatch:
+      type: object
+      properties:
+        confidence_score:
+          type: number
+          format: float
+          example: 1.0
+        name:
+          type: string
+        alt_names:
+          type: array
+          items:
+            type: string
+        entity_type:
+          type: string
+          example: Entity
+        address:
+          type: array
+          items:
+            type: string
+        country_residence:
+          type: array
+          items:
+            type: string
+        nationality:
+          type: array
+          items:
+            type: string
+        data_source:
+          type: object
+          properties:
+            name:
+              type: string
+            short_name:
+              type: string
+        remarks:
+          type: string
+        si_identifier:
+          type: string
+          description: sanctions.io-specific unique identifier for the record.
+        first_import:
+          type: string
+          format: date-time
+        last_update:
+          type: string
+          format: date-time
+        data_hash:
+          type: string
+          description: Changes when the underlying record changes.
+  parameters:
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+  responses:
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer {token}". The token may also be sent as a URL parameter, but the Authorization header is recommended.'

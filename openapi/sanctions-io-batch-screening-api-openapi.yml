@@ -1,0 +1,225 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io Account Management Batch Screening API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+- url: https://api.sanctions.io
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Batch Screening
+  description: Screen up to 10,000 names in a single request.
+paths:
+  /search/batch/:
+    get:
+      operationId: listBatchScreenings
+      tags:
+      - Batch Screening
+      summary: List batch screenings
+      description: Returns a paginated list of batch screening requests submitted by your account.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: Paginated list of batch screenings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createBatchScreening
+      tags:
+      - Batch Screening
+      summary: Create a batch screening
+      description: Screens up to 10,000 names in a single API request - ideal for periodic customer base audits, bulk vendor onboarding, or regulatory reporting. Each record supports the same parameters as real-time screening. Webhook events notify you when batch results are ready.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              maxItems: 10000
+              items:
+                $ref: '#/components/schemas/BatchScreeningRecord'
+            example:
+            - external_identifier: customer-identifier-1
+              name: Walther White
+              min_score: '0.88'
+              entity_type: individual
+              data_source: FSL
+            - external_identifier: customer-identifier-2
+              name: Pied Piper
+              entity_type: entity
+              min_score: '0.88'
+              data_source: FSL
+      responses:
+        '201':
+          description: Batch screening accepted for processing.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /search/batch/{batch_query_id}/:
+    get:
+      operationId: retrieveBatchScreening
+      tags:
+      - Batch Screening
+      summary: Retrieve a batch screening
+      description: Retrieves a batch screening request and its processing status by ID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/batchQueryId'
+      responses:
+        '200':
+          description: Batch screening detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteBatchScreening
+      tags:
+      - Batch Screening
+      summary: Delete a batch screening
+      description: Deletes a batch screening request by ID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/batchQueryId'
+      responses:
+        '204':
+          description: Batch screening deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /search/batch-result/{batch_result_id}/:
+    get:
+      operationId: getBatchScreeningResult
+      tags:
+      - Batch Screening
+      summary: Get a batch screening result
+      description: Retrieves the results of a completed batch screening by result ID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - name: batch_result_id
+        in: path
+        required: true
+        description: The batch result identifier.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Batch screening results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    batchQueryId:
+      name: batch_query_id
+      in: path
+      required: true
+      description: The batch screening identifier.
+      schema:
+        type: string
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+  schemas:
+    BatchScreeningRecord:
+      type: object
+      required:
+      - name
+      - min_score
+      - data_source
+      properties:
+        external_identifier:
+          type: string
+        name:
+          type: string
+        min_score:
+          type: string
+          example: '0.88'
+        entity_type:
+          type: string
+          enum:
+          - individual
+          - entity
+          - vessel
+          - aircraft
+        data_source:
+          type: string
+        country:
+          type: string
+        date_of_birth:
+          type: string
+          format: date
+        identifier:
+          type: string
+        name_match_boosting_threshold:
+          type: number
+          format: float
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+    PaginatedList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            type: object
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer {token}". The token may also be sent as a URL parameter, but the Authorization header is recommended.'

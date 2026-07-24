@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io Account Management Adverse Media API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+- url: https://api.sanctions.io
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Adverse Media
+  description: Keyword search of news articles for adverse media screening (requires Accept version=3.0).
+paths:
+  /search/media/:
+    get:
+      operationId: searchAdverseMedia
+      tags:
+      - Adverse Media
+      summary: Search adverse media
+      description: Searches news articles related to specific individuals, entities, or subjects using custom keywords, across 60,000+ global news sources. Requires the Accept header "application/json; version=3.0". To include adverse media in batch screening or monitoring, pass the ADV-MEDIA short code in data_source.
+      parameters:
+      - name: Accept
+        in: header
+        required: true
+        description: Must be "application/json; version=3.0" for this endpoint.
+        schema:
+          type: string
+          example: application/json; version=3.0
+      - name: name
+        in: query
+        required: true
+        description: Name of the individual, entity, or subject to search news coverage for.
+        schema:
+          type: string
+      - name: keywords
+        in: query
+        required: false
+        description: Custom keywords to focus the adverse media search on relevant risk topics.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Matching news articles with source and relevance details.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+  responses:
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer {token}". The token may also be sent as a URL parameter, but the Authorization header is recommended.'

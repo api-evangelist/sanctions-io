@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io Account Management Monitoring API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+- url: https://api.sanctions.io
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Monitoring
+  description: Continuous monitoring entries, alerts, and result review.
+paths:
+  /monitoring/:
+    get:
+      operationId: getMonitoringList
+      tags:
+      - Monitoring
+      summary: List monitoring entries
+      description: Returns the list of monitored entities. Supports pagination and search, filtering by alerts, review status, and combined filters.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/page'
+      - name: page_size
+        in: query
+        required: false
+        description: Number of entries per page.
+        schema:
+          type: integer
+      - name: search
+        in: query
+        required: false
+        description: Search term to filter monitoring entries.
+        schema:
+          type: string
+      - name: alerts
+        in: query
+        required: false
+        description: Filter entries by whether they have open alerts.
+        schema:
+          type: boolean
+      - name: review_status
+        in: query
+        required: false
+        description: Filter entries by review status.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Paginated list of monitoring entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createMonitoringEntry
+      tags:
+      - Monitoring
+      summary: Create a monitoring entry
+      description: Adds an entity to continuous monitoring. The entity is re-screened against the selected data sources as lists update, and new matches or record changes raise alerts (deliverable by webhook).
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringEntryCreate'
+            example:
+              min_score: 0.88
+              data_source: sdn,nonsdn
+              name: Walter White
+              country: US
+              entity_type: individual
+              date_of_birth: '1956-01-01'
+              external_identifier: ABC123
+      responses:
+        '201':
+          description: Monitoring entry created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /monitoring/{monitoring_entry_id}/:
+    get:
+      operationId: getMonitoringEntryDetail
+      tags:
+      - Monitoring
+      summary: Get a monitoring entry
+      description: Retrieves a monitoring entry and its current match state by ID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/monitoringEntryId'
+      responses:
+        '200':
+          description: Monitoring entry detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteMonitoringEntry
+      tags:
+      - Monitoring
+      summary: Delete a monitoring entry
+      description: Removes an entity from continuous monitoring.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/monitoringEntryId'
+      responses:
+        '204':
+          description: Monitoring entry deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /monitoring/result/{monitoring_result_id}/:
+    get:
+      operationId: getMonitoringResultDetail
+      tags:
+      - Monitoring
+      summary: Get a monitoring result
+      description: Retrieves the detail of a monitoring result (a match raised for a monitored entity) by ID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/monitoringResultId'
+      responses:
+        '200':
+          description: Monitoring result detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateMonitoringResult
+      tags:
+      - Monitoring
+      summary: Update a monitoring result
+      description: Reviews or resolves a monitoring result, for example marking it as a Real Positive with reviewer notes.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/monitoringResultId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: Real Positive
+                text:
+                  type: string
+                  example: Entity matches with sanctions record
+      responses:
+        '200':
+          description: Monitoring result updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    monitoringEntryId:
+      name: monitoring_entry_id
+      in: path
+      required: true
+      description: The monitoring entry identifier.
+      schema:
+        type: string
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    monitoringResultId:
+      name: monitoring_result_id
+      in: path
+      required: true
+      description: The monitoring result identifier.
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+    PaginatedList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            type: object
+    MonitoringEntryCreate:
+      type: object
+      required:
+      - name
+      - min_score
+      - data_source
+      properties:
+        min_score:
+          type: number
+          format: float
+          example: 0.88
+        data_source:
+          type: string
+          example: sdn,nonsdn
+        name:
+          type: string
+          example: Walter White
+        country:
+          type: string
+          example: US
+        entity_type:
+          type: string
+          enum:
+          - individual
+          - entity
+          - vessel
+          - aircraft
+        date_of_birth:
+          type: string
+          format: date
+          example: '1956-01-01'
+        identifier:
+          type: string
+        external_identifier:
+          type: string
+          example: ABC123
+        name_match_boosting_threshold:
+          type: number
+          format: float
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer {token}". The token may also be sent as a URL parameter, but the Authorization header is recommended.'

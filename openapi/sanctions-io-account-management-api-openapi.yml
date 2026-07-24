@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: sanctions.io Account Management API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  version: '2.3'
+  contact:
+    name: sanctions.io
+    url: https://www.sanctions.io
+    email: info@sanctions.io
+  termsOfService: https://www.sanctions.io/terms-of-service
+servers:
+- url: https://api.sanctions.io
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Account Management
+  description: API tokens, company and webhook configuration, users, plans, and usage.
+paths:
+  /tokens/:
+    get:
+      operationId: listApiTokens
+      tags:
+      - Account Management
+      summary: List API tokens
+      description: Lists the API tokens on your account.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: List of API tokens.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createApiToken
+      tags:
+      - Account Management
+      summary: Create an API token
+      description: Creates a new API token for your account.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '201':
+          description: API token created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /tokens/{token_key}:
+    delete:
+      operationId: deleteApiToken
+      tags:
+      - Account Management
+      summary: Delete an API token
+      description: Deletes (revokes) an API token by key.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - name: token_key
+        in: path
+        required: true
+        description: The key of the token to delete.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: API token deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /company/:
+    get:
+      operationId: getCompany
+      tags:
+      - Account Management
+      summary: Get company
+      description: Retrieves your company details.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: editCompany
+      tags:
+      - Account Management
+      summary: Edit company
+      description: Updates your company details.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /company/config/:
+    get:
+      operationId: getCompanyConfig
+      tags:
+      - Account Management
+      summary: Get company config
+      description: Retrieves the company configuration, including any registered webhook endpoint.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company configuration.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: editCompanyConfig
+      tags:
+      - Account Management
+      summary: Edit company config
+      description: Updates the company configuration, including registering or changing the webhook endpoint URL. Webhook creation returns a hash_secret used to verify the SHA-256 x-sanctions-security signature on delivered events; the secret cannot be retrieved again later.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Company configuration updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /user/:
+    get:
+      operationId: listCompanyUsers
+      tags:
+      - Account Management
+      summary: List company users
+      description: Lists the users on your company account, with pagination.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/page'
+      - name: page_size
+        in: query
+        required: false
+        description: Number of users per page.
+        schema:
+          type: integer
+          example: 25
+      responses:
+        '200':
+          description: Paginated list of users.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: inviteUser
+      tags:
+      - Account Management
+      summary: Invite a user
+      description: Invites a new user to your company account.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '201':
+          description: User invited.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /user/{user_uuid}:
+    get:
+      operationId: getUser
+      tags:
+      - Account Management
+      summary: Get a user
+      description: Retrieves a company user by UUID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/userUuid'
+      responses:
+        '200':
+          description: User detail.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateUser
+      tags:
+      - Account Management
+      summary: Update a user
+      description: Updates a company user by UUID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/userUuid'
+      responses:
+        '200':
+          description: User updated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteUser
+      tags:
+      - Account Management
+      summary: Delete a user
+      description: Deletes a company user by UUID.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      - $ref: '#/components/parameters/userUuid'
+      responses:
+        '204':
+          description: User deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /plans/:
+    get:
+      operationId: manageSubscriptions
+      tags:
+      - Account Management
+      summary: Manage subscriptions
+      description: Retrieves the plan subscriptions on your account.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Plan subscriptions.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /searches/count:
+    get:
+      operationId: listScreeningsCount
+      tags:
+      - Account Management
+      summary: Count screenings
+      description: Returns the count of screenings performed by your account, for usage tracking against plan volume.
+      parameters:
+      - $ref: '#/components/parameters/acceptVersion'
+      responses:
+        '200':
+          description: Screening count.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  parameters:
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+    userUuid:
+      name: user_uuid
+      in: path
+      required: true
+      description: The user UUID.
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'API token from the sanctions.io user portal, passed as "Authorization: Bearer {token}". The token may also be sent as a URL parameter, but the Authorization header is recommended.'
