@@ -1,0 +1,24 @@
+{
+  "provider": "sanctions-io",
+  "sources": [
+    "sanctions-io-account-management-api-openapi.yml",
+    "sanctions-io-adverse-media-api-openapi.yml",
+    "sanctions-io-batch-screening-api-openapi.yml",
+    "sanctions-io-data-sources-api-openapi.yml",
+    "sanctions-io-monitoring-api-openapi.yml",
+    "sanctions-io-screening-api-openapi.yml"
+  ],
+  "outputs": [
+    "sanctions-io-account-management-api-openapi.yml",
+    "sanctions-io-adverse-media-api-openapi.yml",
+    "sanctions-io-batch-screening-api-openapi.yml",
+    "sanctions-io-data-sources-api-openapi.yml",
+    "sanctions-io-monitoring-api-openapi.yml",
+    "sanctions-io-screening-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
