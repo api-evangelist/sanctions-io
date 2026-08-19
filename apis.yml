@@ -37,7 +37,7 @@ tags:
 - RegTech
 created: '2026-07-11'
 modified: '2026-07-11'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: sanctions-io:sanctions-io-account-management-api
   name: sanctions.io Account Management API
