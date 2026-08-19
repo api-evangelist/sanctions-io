@@ -1,0 +1,1328 @@
+{
+  "item": [
+    {
+      "id": "2afa38d1-e0fc-4f82-a423-3263c7bbe626",
+      "name": "Monitoring",
+      "description": {
+        "content": "Continuous monitoring entries, alerts, and result review.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "19118706-019b-44a6-8f75-925ccbe6ee85",
+          "name": "List monitoring entries",
+          "request": {
+            "name": "List monitoring entries",
+            "description": {
+              "content": "Returns the list of monitored entities. Supports pagination and search, filtering by alerts, review status, and combined filters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "Page number for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<integer>",
+                  "description": "Number of entries per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "Search term to filter monitoring entries."
+                },
+                {
+                  "disabled": false,
+                  "key": "alerts",
+                  "value": "<boolean>",
+                  "description": "Filter entries by whether they have open alerts."
+                },
+                {
+                  "disabled": false,
+                  "key": "review_status",
+                  "value": "<string>",
+                  "description": "Filter entries by review status."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4bc7001f-6a78-4c8e-b159-b444b6cd1e4a",
+              "name": "Paginated list of monitoring entries.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "alerts",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "review_status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 9761,\n  \"next\": \"string\",\n  \"previous\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "470eb63a-44f2-488b-b551-6ba89aa0e6e3",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "alerts",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "review_status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "15d8843c-6880-4f3d-a918-e59fbb88cd7a",
+          "name": "Create a monitoring entry",
+          "request": {
+            "name": "Create a monitoring entry",
+            "description": {
+              "content": "Adds an entity to continuous monitoring. The entity is re-screened against the selected data sources as lists update, and new matches or record changes raise alerts (deliverable by webhook).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"min_score\": \"<float>\",\n  \"data_source\": \"<string>\",\n  \"country\": \"<string>\",\n  \"entity_type\": \"<string>\",\n  \"date_of_birth\": \"<date>\",\n  \"identifier\": \"<string>\",\n  \"external_identifier\": \"<string>\",\n  \"name_match_boosting_threshold\": \"<float>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "972a7cf6-4f49-42b4-ab62-f832adfd0c49",
+              "name": "Monitoring entry created.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"min_score\": 0.88,\n  \"data_source\": \"sdn,nonsdn\",\n  \"name\": \"Walter White\",\n  \"country\": \"US\",\n  \"entity_type\": \"individual\",\n  \"date_of_birth\": \"1956-01-01\",\n  \"external_identifier\": \"ABC123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "451441d7-3c0c-4fec-86dc-b2e3d34809ba",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"min_score\": 0.88,\n  \"data_source\": \"sdn,nonsdn\",\n  \"name\": \"Walter White\",\n  \"country\": \"US\",\n  \"entity_type\": \"individual\",\n  \"date_of_birth\": \"1956-01-01\",\n  \"external_identifier\": \"ABC123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47437085-f52d-44e4-87ab-50f40736ecac",
+          "name": "Get a monitoring entry",
+          "request": {
+            "name": "Get a monitoring entry",
+            "description": {
+              "content": "Retrieves a monitoring entry and its current match state by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                ":monitoring_entry_id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitoring_entry_id",
+                  "description": "(Required) The monitoring entry identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5a080df3-5111-405c-ba09-84ae1839e1b3",
+              "name": "Monitoring entry detail.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "28a8d135-a3dc-43cc-a684-06f7ee8c12b9",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09460505-ed87-4ca5-a877-c89e201ce420",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4693756e-9ae3-489a-8e5a-e02190651705",
+          "name": "Delete a monitoring entry",
+          "request": {
+            "name": "Delete a monitoring entry",
+            "description": {
+              "content": "Removes an entity from continuous monitoring.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                ":monitoring_entry_id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitoring_entry_id",
+                  "description": "(Required) The monitoring entry identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6f0de43-9786-4f3a-bc01-1dda7982181b",
+              "name": "Monitoring entry deleted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "302aa93d-1817-438e-8d0e-fb4bd2922f35",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "927d7b96-b317-48f4-86d7-1d7de7133900",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    ":monitoring_entry_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_entry_id",
+                      "description": "(Required) The monitoring entry identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4985a860-c4b9-427a-ba39-717a0743c515",
+          "name": "Get a monitoring result",
+          "request": {
+            "name": "Get a monitoring result",
+            "description": {
+              "content": "Retrieves the detail of a monitoring result (a match raised for a monitored entity) by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                "result",
+                ":monitoring_result_id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitoring_result_id",
+                  "description": "(Required) The monitoring result identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e3abe29-e3e9-4dab-a2d0-7aba47ac49b5",
+              "name": "Monitoring result detail.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4b0ed85f-59ab-4d0d-9a3d-331d6aef88bd",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aad76fcb-2693-4743-bb20-0192aafedfb4",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f45bb6df-ab04-40c4-bf1f-d47dab8714ce",
+          "name": "Update a monitoring result",
+          "request": {
+            "name": "Update a monitoring result",
+            "description": {
+              "content": "Reviews or resolves a monitoring result, for example marking it as a Real Positive with reviewer notes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "monitoring",
+                "result",
+                ":monitoring_result_id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitoring_result_id",
+                  "description": "(Required) The monitoring result identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"<string>\",\n  \"text\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "98854503-bc3b-4364-85b5-1f5f4017b2e2",
+              "name": "Monitoring result updated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"Real Positive\",\n  \"text\": \"Entity matches with sanctions record\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0b74dd28-67c2-4e00-bf4d-5840e4fd7adb",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"Real Positive\",\n  \"text\": \"Entity matches with sanctions record\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aeea9af9-58cb-425c-8fab-c29d7536e0e3",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "monitoring",
+                    "result",
+                    ":monitoring_result_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitoring_result_id",
+                      "description": "(Required) The monitoring result identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"Real Positive\",\n  \"text\": \"Entity matches with sanctions record\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.sanctions.io",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a87fb92a-2a75-4b76-a068-82a5f581d2d1",
+    "name": "sanctions.io Account Management Monitoring API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example \"application/json; version=2.3\" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.\n\nContact Support:\n Name: sanctions.io\n Email: info@sanctions.io",
+      "type": "text/plain"
+    }
+  }
+}

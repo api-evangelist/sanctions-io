@@ -1,0 +1,55 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management Adverse Media API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Adverse Media",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search adverse media",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/media/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Name of the individual, entity, or subject to search news coverage for."
+              },
+              {
+                "name": "keywords",
+                "value": "",
+                "type": "query",
+                "description": "Custom keywords to focus the adverse media search on relevant risk topics."
+              }
+            ]
+          },
+          "docs": "Searches news articles related to specific individuals, entities, or subjects using custom keywords, across 60,000+ global news sources. Requires the Accept header \"application/json; version=3.0\". To include adverse media in batch screening or monitoring, pass the ADV-MEDIA short code in data_source."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

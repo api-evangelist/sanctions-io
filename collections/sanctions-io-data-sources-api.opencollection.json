@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management Data Sources API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Data Sources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List data sources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/sources/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all sanctions and watchlist sources available for screening. Use each result's short_name as the short code in the data_source screening parameter (multiple values comma-separated). Some sources include a notes field with usage guidance."
+        },
+        {
+          "info": {
+            "name": "Export the sanctions database",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/exporter/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns a full export of the sanctions and crime database as a CSV file. A specific plan subscription is required to access this endpoint."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

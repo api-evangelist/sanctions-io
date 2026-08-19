@@ -1,0 +1,306 @@
+{
+  "item": [
+    {
+      "id": "4155e5c9-e710-4ad5-9a5c-13cde522b1b4",
+      "name": "Screening",
+      "description": {
+        "content": "Real-time single screening against sanctions, PEP, and criminal watchlists.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a83e568a-bb74-4943-b3e2-81021b99da2d",
+          "name": "Screen a name in real time",
+          "request": {
+            "name": "Screen a name in real time",
+            "description": {
+              "content": "Queries the sanctions, criminal watchlist, and PEP databases for a name and returns scored matches. Supports individuals, entities, vessels, and aircraft. Results include the confidence score, matched record details, the originating data source, and the echoed search parameters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "search",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "(Required) Primary name of the entity being screened (maximum 15 words). Full legal name for individuals; registered name for organizations."
+                },
+                {
+                  "disabled": false,
+                  "key": "min_score",
+                  "value": "<float>",
+                  "description": "(Required) Minimum match confidence score (0.8-1.0) for a result to count as a match. Recommended starting value 0.88; 0.93 for stricter matching."
+                },
+                {
+                  "disabled": false,
+                  "key": "data_source",
+                  "value": "<string>",
+                  "description": "(Required) Comma-separated watchlist short codes (from the sources endpoint) or a Screening Collection, e.g. \"sdn,nonsdn,uk-sanctions\". Include ADV-MEDIA to add adverse media."
+                },
+                {
+                  "disabled": false,
+                  "key": "entity_type",
+                  "value": "<string>",
+                  "description": "Type of the screened entity. Strongly recommended to improve performance and match accuracy."
+                },
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "ISO 3166-1 alpha-2 country associated with the entity (nationality/residence for individuals, incorporation/operating country for organizations)."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_of_birth",
+                  "value": "<date>",
+                  "description": "Date of birth (YYYY-MM-DD). Strongly recommended for individuals, particularly for PEP screening."
+                },
+                {
+                  "disabled": false,
+                  "key": "identifier",
+                  "value": "<string>",
+                  "description": "Additional identifier (passport number, national ID, tax ID, email, company domain, SWIFT code, IMO number, aircraft registration, wallet address; max 120 characters) screened in parallel with the name."
+                },
+                {
+                  "disabled": false,
+                  "key": "external_identifier",
+                  "value": "<string>",
+                  "description": "Client-defined identifier stored and returned in results so alerts map back to your internal records."
+                },
+                {
+                  "disabled": false,
+                  "key": "name_match_boosting_threshold",
+                  "value": "<float>",
+                  "description": "Optional threshold (0.8-1.0, recommended 0.93-0.95) above which high-confidence name matches are boosted in the overall confidence score."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9eae3705-cc16-4f7b-82ce-262d6f92a2af",
+              "name": "Paginated screening matches plus the echoed search parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "search",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "Walter White"
+                    },
+                    {
+                      "key": "min_score",
+                      "value": "0.88"
+                    },
+                    {
+                      "key": "data_source",
+                      "value": "sdn,nonsdn"
+                    },
+                    {
+                      "key": "entity_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "country",
+                      "value": "US"
+                    },
+                    {
+                      "key": "date_of_birth",
+                      "value": "1956-01-01"
+                    },
+                    {
+                      "key": "identifier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "external_identifier",
+                      "value": "ABC123"
+                    },
+                    {
+                      "key": "name_match_boosting_threshold",
+                      "value": "0.94"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 4758,\n  \"next\": \"string\",\n  \"previous\": \"string\",\n  \"results\": [\n    {\n      \"confidence_score\": 1,\n      \"name\": \"string\",\n      \"alt_names\": [\n        \"string\",\n        \"string\"\n      ],\n      \"entity_type\": \"Entity\",\n      \"address\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_residence\": [\n        \"string\",\n        \"string\"\n      ],\n      \"nationality\": [\n        \"string\",\n        \"string\"\n      ],\n      \"data_source\": {\n        \"name\": \"string\",\n        \"short_name\": \"string\"\n      },\n      \"remarks\": \"string\",\n      \"si_identifier\": \"string\",\n      \"first_import\": \"2002-01-06T13:41:30.784Z\",\n      \"last_update\": \"2012-09-08T22:55:39.790Z\",\n      \"data_hash\": \"string\"\n    },\n    {\n      \"confidence_score\": 1,\n      \"name\": \"string\",\n      \"alt_names\": [\n        \"string\",\n        \"string\"\n      ],\n      \"entity_type\": \"Entity\",\n      \"address\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_residence\": [\n        \"string\",\n        \"string\"\n      ],\n      \"nationality\": [\n        \"string\",\n        \"string\"\n      ],\n      \"data_source\": {\n        \"name\": \"string\",\n        \"short_name\": \"string\"\n      },\n      \"remarks\": \"string\",\n      \"si_identifier\": \"string\",\n      \"first_import\": \"2011-10-26T17:40:28.461Z\",\n      \"last_update\": \"1961-08-16T01:34:09.146Z\",\n      \"data_hash\": \"string\"\n    }\n  ],\n  \"search\": {\n    \"params\": {},\n    \"timestamp\": \"2015-02-06T01:01:32.953Z\",\n    \"api_version\": \"2.3\",\n    \"id\": \"4a49c22a-0461-0659-8b9b-0fca14e260b2\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4bffe98f-61b0-4ad8-8537-f0e3648860d8",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "search",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "Walter White"
+                    },
+                    {
+                      "key": "min_score",
+                      "value": "0.88"
+                    },
+                    {
+                      "key": "data_source",
+                      "value": "sdn,nonsdn"
+                    },
+                    {
+                      "key": "entity_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "country",
+                      "value": "US"
+                    },
+                    {
+                      "key": "date_of_birth",
+                      "value": "1956-01-01"
+                    },
+                    {
+                      "key": "identifier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "external_identifier",
+                      "value": "ABC123"
+                    },
+                    {
+                      "key": "name_match_boosting_threshold",
+                      "value": "0.94"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Selects the API version, e.g. \"application/json; version=2.3\". Without the header, version 1.0 is used by default.",
+                    "key": "Accept",
+                    "value": "application/json; version=2.3"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.sanctions.io",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "010c6450-45f0-4e3a-abde-554fbd5b1697",
+    "name": "sanctions.io Account Management Screening API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example \"application/json; version=2.3\" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.\n\nContact Support:\n Name: sanctions.io\n Email: info@sanctions.io",
+      "type": "text/plain"
+    }
+  }
+}

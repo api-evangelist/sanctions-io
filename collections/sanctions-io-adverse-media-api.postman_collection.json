@@ -1,0 +1,207 @@
+{
+  "item": [
+    {
+      "id": "29126e61-cb6e-4ffd-8d07-5ae6cb29bf69",
+      "name": "Adverse Media",
+      "description": {
+        "content": "Keyword search of news articles for adverse media screening (requires Accept version=3.0).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ef70d5a2-ac96-4e8c-90c1-e548101d2a4b",
+          "name": "Search adverse media",
+          "request": {
+            "name": "Search adverse media",
+            "description": {
+              "content": "Searches news articles related to specific individuals, entities, or subjects using custom keywords, across 60,000+ global news sources. Requires the Accept header \"application/json; version=3.0\". To include adverse media in batch screening or monitoring, pass the ADV-MEDIA short code in data_source.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "search",
+                "media",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "(Required) Name of the individual, entity, or subject to search news coverage for."
+                },
+                {
+                  "disabled": false,
+                  "key": "keywords",
+                  "value": "<string>",
+                  "description": "Custom keywords to focus the adverse media search on relevant risk topics."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "10a6c3fd-80f8-4066-ad98-676c7445cd39",
+              "name": "Matching news articles with source and relevance details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "search",
+                    "media",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Must be \"application/json; version=3.0\" for this endpoint.",
+                    "key": "Accept",
+                    "value": "application/json; version=3.0"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4b80a2b4-0c1a-485b-91de-3bc84bc65957",
+              "name": "Authentication credentials were not provided or are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "search",
+                    "media",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Must be \"application/json; version=3.0\" for this endpoint.",
+                    "key": "Accept",
+                    "value": "application/json; version=3.0"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Authentication credentials were not provided.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.sanctions.io",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "438d15f2-94d6-47af-a752-b337107d0cee",
+    "name": "sanctions.io Account Management Adverse Media API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example \"application/json; version=2.3\" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.\n\nContact Support:\n Name: sanctions.io\n Email: info@sanctions.io",
+      "type": "text/plain"
+    }
+  }
+}

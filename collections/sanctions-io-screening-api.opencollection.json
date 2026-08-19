@@ -1,0 +1,97 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management Screening API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Screening",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Screen a name in real time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Primary name of the entity being screened (maximum 15 words). Full legal name for individuals; registered name for organizations."
+              },
+              {
+                "name": "min_score",
+                "value": "",
+                "type": "query",
+                "description": "Minimum match confidence score (0.8-1.0) for a result to count as a match. Recommended starting value 0.88; 0.93 for stricter matching."
+              },
+              {
+                "name": "data_source",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated watchlist short codes (from the sources endpoint) or a Screening Collection, e.g. \"sdn,nonsdn,uk-sanctions\". Include ADV-MEDIA to add adverse media."
+              },
+              {
+                "name": "entity_type",
+                "value": "",
+                "type": "query",
+                "description": "Type of the screened entity. Strongly recommended to improve performance and match accuracy."
+              },
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "ISO 3166-1 alpha-2 country associated with the entity (nationality/residence for individuals, incorporation/operating country for organizations)."
+              },
+              {
+                "name": "date_of_birth",
+                "value": "",
+                "type": "query",
+                "description": "Date of birth (YYYY-MM-DD). Strongly recommended for individuals, particularly for PEP screening."
+              },
+              {
+                "name": "identifier",
+                "value": "",
+                "type": "query",
+                "description": "Additional identifier (passport number, national ID, tax ID, email, company domain, SWIFT code, IMO number, aircraft registration, wallet address; max 120 characters) screened in parallel with the name."
+              },
+              {
+                "name": "external_identifier",
+                "value": "",
+                "type": "query",
+                "description": "Client-defined identifier stored and returned in results so alerts map back to your internal records."
+              },
+              {
+                "name": "name_match_boosting_threshold",
+                "value": "",
+                "type": "query",
+                "description": "Optional threshold (0.8-1.0, recommended 0.93-0.95) above which high-confidence name matches are boosted in the overall confidence score."
+              }
+            ]
+          },
+          "docs": "Queries the sanctions, criminal watchlist, and PEP databases for a name and returns scored matches. Supports individuals, entities, vessels, and aircraft. Results include the confidence score, matched record details, the originating data source, and the echoed search parameters."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

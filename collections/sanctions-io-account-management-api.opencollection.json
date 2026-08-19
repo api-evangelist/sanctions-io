@@ -1,0 +1,308 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List API tokens",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/tokens/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Lists the API tokens on your account."
+        },
+        {
+          "info": {
+            "name": "Create an API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/tokens/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a new API token for your account."
+        },
+        {
+          "info": {
+            "name": "Delete an API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/tokens/:token_key",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "token_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the token to delete."
+              }
+            ]
+          },
+          "docs": "Deletes (revokes) an API token by key."
+        },
+        {
+          "info": {
+            "name": "Get company",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/company/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves your company details."
+        },
+        {
+          "info": {
+            "name": "Edit company",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.sanctions.io/company/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Updates your company details."
+        },
+        {
+          "info": {
+            "name": "Get company config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/company/config/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves the company configuration, including any registered webhook endpoint."
+        },
+        {
+          "info": {
+            "name": "Edit company config",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.sanctions.io/company/config/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Updates the company configuration, including registering or changing the webhook endpoint URL. Webhook creation returns a hash_secret used to verify the SHA-256 x-sanctions-security signature on delivered events; the secret cannot be retrieved again later."
+        },
+        {
+          "info": {
+            "name": "List company users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/user/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Number of users per page."
+              }
+            ]
+          },
+          "docs": "Lists the users on your company account, with pagination."
+        },
+        {
+          "info": {
+            "name": "Invite a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/user/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Invites a new user to your company account."
+        },
+        {
+          "info": {
+            "name": "Get a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "user_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The user UUID."
+              }
+            ]
+          },
+          "docs": "Retrieves a company user by UUID."
+        },
+        {
+          "info": {
+            "name": "Update a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "user_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The user UUID."
+              }
+            ]
+          },
+          "docs": "Updates a company user by UUID."
+        },
+        {
+          "info": {
+            "name": "Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/user/:user_uuid",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "user_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The user UUID."
+              }
+            ]
+          },
+          "docs": "Deletes a company user by UUID."
+        },
+        {
+          "info": {
+            "name": "Manage subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/plans/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves the plan subscriptions on your account."
+        },
+        {
+          "info": {
+            "name": "Count screenings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/searches/count",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns the count of screenings performed by your account, for usage tracking against plan volume."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

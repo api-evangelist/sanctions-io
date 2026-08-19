@@ -1,0 +1,198 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management Monitoring API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Monitoring",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List monitoring entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Number of entries per page."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search term to filter monitoring entries."
+              },
+              {
+                "name": "alerts",
+                "value": "",
+                "type": "query",
+                "description": "Filter entries by whether they have open alerts."
+              },
+              {
+                "name": "review_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter entries by review status."
+              }
+            ]
+          },
+          "docs": "Returns the list of monitored entities. Supports pagination and search, filtering by alerts, review status, and combined filters."
+        },
+        {
+          "info": {
+            "name": "Create a monitoring entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/monitoring/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an entity to continuous monitoring. The entity is re-screened against the selected data sources as lists update, and new matches or record changes raise alerts (deliverable by webhook)."
+        },
+        {
+          "info": {
+            "name": "Get a monitoring entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/:monitoring_entry_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "monitoring_entry_id",
+                "value": "",
+                "type": "path",
+                "description": "The monitoring entry identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves a monitoring entry and its current match state by ID."
+        },
+        {
+          "info": {
+            "name": "Delete a monitoring entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/monitoring/:monitoring_entry_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "monitoring_entry_id",
+                "value": "",
+                "type": "path",
+                "description": "The monitoring entry identifier."
+              }
+            ]
+          },
+          "docs": "Removes an entity from continuous monitoring."
+        },
+        {
+          "info": {
+            "name": "Get a monitoring result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/monitoring/result/:monitoring_result_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "monitoring_result_id",
+                "value": "",
+                "type": "path",
+                "description": "The monitoring result identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves the detail of a monitoring result (a match raised for a monitored entity) by ID."
+        },
+        {
+          "info": {
+            "name": "Update a monitoring result",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.sanctions.io/monitoring/result/:monitoring_result_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "monitoring_result_id",
+                "value": "",
+                "type": "path",
+                "description": "The monitoring result identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reviews or resolves a monitoring result, for example marking it as a Real Positive with reviewer notes."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

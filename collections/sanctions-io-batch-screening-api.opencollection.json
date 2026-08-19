@@ -1,0 +1,145 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "sanctions.io Account Management Batch Screening API",
+    "version": "2.3"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Batch Screening",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List batch screenings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/batch/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of batch screening requests submitted by your account."
+        },
+        {
+          "info": {
+            "name": "Create a batch screening",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sanctions.io/search/batch/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Screens up to 10,000 names in a single API request - ideal for periodic customer base audits, bulk vendor onboarding, or regulatory reporting. Each record supports the same parameters as real-time screening. Webhook events notify you when batch results are ready."
+        },
+        {
+          "info": {
+            "name": "Retrieve a batch screening",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/batch/:batch_query_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batch_query_id",
+                "value": "",
+                "type": "path",
+                "description": "The batch screening identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves a batch screening request and its processing status by ID."
+        },
+        {
+          "info": {
+            "name": "Delete a batch screening",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sanctions.io/search/batch/:batch_query_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batch_query_id",
+                "value": "",
+                "type": "path",
+                "description": "The batch screening identifier."
+              }
+            ]
+          },
+          "docs": "Deletes a batch screening request by ID."
+        },
+        {
+          "info": {
+            "name": "Get a batch screening result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sanctions.io/search/batch-result/:batch_result_id/",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "batch_result_id",
+                "value": "",
+                "type": "path",
+                "description": "The batch result identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves the results of a completed batch screening by result ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
