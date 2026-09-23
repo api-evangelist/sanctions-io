@@ -1,7 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: sanctions.io Account Management Adverse Media API
-  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  title: sanctions.io Adverse Media API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance.
   version: '2.3'
   contact:
     name: sanctions.io
@@ -50,12 +50,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  schemas:
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
   responses:
     Unauthorized:
       description: Authentication credentials were not provided or are invalid.
@@ -65,6 +59,12 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             detail: Authentication credentials were not provided.
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

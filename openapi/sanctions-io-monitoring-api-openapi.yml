@@ -1,7 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: sanctions.io Account Management Monitoring API
-  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance. It covers the Screening API (v2.3) - real-time single search, batch screening of up to 10,000 records per request, adverse media search, data source listing, and full database export - and the Monitoring API (v3.1) for continuous monitoring with alerts, plus account management (tokens, company and webhook configuration, users, plans, usage). All requests require a Bearer API token in the Authorization header; the API version is selected with the Accept header, for example "application/json; version=2.3" (the adverse media endpoint requires version=3.0). Sign up for a self-serve 7-day free trial at https://api.sanctions.io/users/signup to obtain a key.
+  title: sanctions.io Monitoring API
+  description: The sanctions.io API provides sanctions, PEP (politically exposed persons), and criminal watchlist screening for AML compliance.
   version: '2.3'
   contact:
     name: sanctions.io
@@ -167,73 +167,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    monitoringEntryId:
-      name: monitoring_entry_id
-      in: path
-      required: true
-      description: The monitoring entry identifier.
-      schema:
-        type: string
-    acceptVersion:
-      name: Accept
-      in: header
-      required: false
-      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
-      schema:
-        type: string
-        example: application/json; version=2.3
-    monitoringResultId:
-      name: monitoring_result_id
-      in: path
-      required: true
-      description: The monitoring result identifier.
-      schema:
-        type: string
-    page:
-      name: page
-      in: query
-      required: false
-      description: Page number for paginated results.
-      schema:
-        type: integer
-        example: 1
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication credentials were not provided or are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            detail: Authentication credentials were not provided.
   schemas:
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-    PaginatedList:
-      type: object
-      properties:
-        count:
-          type: integer
-        next:
-          type: string
-          nullable: true
-        previous:
-          type: string
-          nullable: true
-        results:
-          type: array
-          items:
-            type: object
     MonitoringEntryCreate:
       type: object
       required:
@@ -273,6 +207,74 @@ components:
         name_match_boosting_threshold:
           type: number
           format: float
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+    PaginatedList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type:
+          - string
+          - 'null'
+        previous:
+          type:
+          - string
+          - 'null'
+        results:
+          type: array
+          items:
+            type: object
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
+  parameters:
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    monitoringEntryId:
+      name: monitoring_entry_id
+      in: path
+      required: true
+      description: The monitoring entry identifier.
+      schema:
+        type: string
+    monitoringResultId:
+      name: monitoring_result_id
+      in: path
+      required: true
+      description: The monitoring result identifier.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

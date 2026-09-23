@@ -1,12 +1,7 @@
 {
   "provider": "sanctions-io",
   "sources": [
-    "sanctions-io-account-management-api-openapi.yml",
-    "sanctions-io-adverse-media-api-openapi.yml",
-    "sanctions-io-batch-screening-api-openapi.yml",
-    "sanctions-io-data-sources-api-openapi.yml",
-    "sanctions-io-monitoring-api-openapi.yml",
-    "sanctions-io-screening-api-openapi.yml"
+    "_original/sanctions-io-openapi.yml"
   ],
   "outputs": [
     "sanctions-io-account-management-api-openapi.yml",
@@ -19,6 +14,17 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sanctions-io-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "sanctions-io-account-management-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sanctions-io-adverse-media-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sanctions-io-batch-screening-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sanctions-io-data-sources-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sanctions-io-monitoring-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sanctions-io-screening-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
