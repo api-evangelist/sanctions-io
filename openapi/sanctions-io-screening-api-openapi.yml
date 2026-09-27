@@ -111,6 +111,37 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    ScreeningResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type:
+          - string
+          - 'null'
+        previous:
+          type:
+          - string
+          - 'null'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningMatch'
+        search:
+          type: object
+          properties:
+            params:
+              type: object
+            timestamp:
+              type: string
+              format: date-time
+            api_version:
+              type: string
+              example: '2.3'
+            id:
+              type: string
+              format: uuid
     ScreeningMatch:
       type: object
       properties:
@@ -165,37 +196,6 @@ components:
       properties:
         detail:
           type: string
-    ScreeningResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-        next:
-          type:
-          - string
-          - 'null'
-        previous:
-          type:
-          - string
-          - 'null'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreeningMatch'
-        search:
-          type: object
-          properties:
-            params:
-              type: object
-            timestamp:
-              type: string
-              format: date-time
-            api_version:
-              type: string
-              example: '2.3'
-            id:
-              type: string
-              format: uuid
   parameters:
     acceptVersion:
       name: Accept

@@ -167,6 +167,52 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    monitoringResultId:
+      name: monitoring_result_id
+      in: path
+      required: true
+      description: The monitoring result identifier.
+      schema:
+        type: string
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
+    page:
+      name: page
+      in: query
+      required: false
+      description: Page number for paginated results.
+      schema:
+        type: integer
+        example: 1
+    monitoringEntryId:
+      name: monitoring_entry_id
+      in: path
+      required: true
+      description: The monitoring entry identifier.
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
   schemas:
     MonitoringEntryCreate:
       type: object
@@ -207,11 +253,6 @@ components:
         name_match_boosting_threshold:
           type: number
           format: float
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
     PaginatedList:
       type: object
       properties:
@@ -229,52 +270,11 @@ components:
           type: array
           items:
             type: object
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication credentials were not provided or are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            detail: Authentication credentials were not provided.
-  parameters:
-    page:
-      name: page
-      in: query
-      required: false
-      description: Page number for paginated results.
-      schema:
-        type: integer
-        example: 1
-    acceptVersion:
-      name: Accept
-      in: header
-      required: false
-      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
-      schema:
-        type: string
-        example: application/json; version=2.3
-    monitoringEntryId:
-      name: monitoring_entry_id
-      in: path
-      required: true
-      description: The monitoring entry identifier.
-      schema:
-        type: string
-    monitoringResultId:
-      name: monitoring_result_id
-      in: path
-      required: true
-      description: The monitoring result identifier.
-      schema:
-        type: string
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

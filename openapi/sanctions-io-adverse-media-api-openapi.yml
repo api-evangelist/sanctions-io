@@ -50,6 +50,12 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
   responses:
     Unauthorized:
       description: Authentication credentials were not provided or are invalid.
@@ -59,12 +65,6 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             detail: Authentication credentials were not provided.
-  schemas:
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
   securitySchemes:
     bearerAuth:
       type: http
