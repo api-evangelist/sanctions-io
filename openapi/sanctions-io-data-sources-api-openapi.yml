@@ -76,6 +76,11 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
     DataSource:
       type: object
       properties:
@@ -89,26 +94,6 @@ components:
         notes:
           type: string
           description: Optional usage guidance, such as recommending a source be combined with another.
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-  responses:
-    TooManyRequests:
-      description: Too many requests or the plan does not permit this operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication credentials were not provided or are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            detail: Authentication credentials were not provided.
   parameters:
     acceptVersion:
       name: Accept
@@ -126,6 +111,21 @@ components:
       schema:
         type: integer
         example: 1
+  responses:
+    TooManyRequests:
+      description: Too many requests or the plan does not permit this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication credentials were not provided or are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            detail: Authentication credentials were not provided.
   securitySchemes:
     bearerAuth:
       type: http

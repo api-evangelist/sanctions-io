@@ -111,6 +111,11 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
     ScreeningResponse:
       type: object
       properties:
@@ -191,11 +196,6 @@ components:
         data_hash:
           type: string
           description: Changes when the underlying record changes.
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
   parameters:
     acceptVersion:
       name: Accept
