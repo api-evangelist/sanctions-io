@@ -157,6 +157,9 @@ apis:
   - type: ProductPage
     url: https://www.sanctions.io/data/adverse-media-screening
 common:
+- type: CapabilityMap
+  url: capabilities/sanctions-io-capability-edges.yml
+  name: sanctions.io Business Capability Map
 - type: AgenticAccess
   url: agentic-access/sanctions-io-agentic-access.yml
 - type: DomainSecurity

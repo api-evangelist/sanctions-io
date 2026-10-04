@@ -1,0 +1,59 @@
+slug: sanctions-io
+provider: sanctions.io
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 4
+edges:
+- tag: Screening
+  spec_file: sanctions-io-screening-api-openapi.yml
+  capability_id: BC-130.10
+  capability_id_l1: BC-130
+  capability_name: Regulatory Compliance Management
+  confidence: 0.8
+  evidence: GET /search/ createScreeningRequest 'Screen a name in real time'; schemas 'ScreeningResponse',
+    'ScreeningMatch'
+  reason: Real-time name screening against sanctions, PEP and criminal watchlists is the core AML compliance
+    control; the operation and schema names leave no alternative reading within the candidate set, mapped
+    to Regulatory Compliance Management.
+- tag: Batch Screening
+  spec_file: sanctions-io-batch-screening-api-openapi.yml
+  capability_id: BC-130.10
+  capability_id_l1: BC-130
+  capability_name: Regulatory Compliance Management
+  confidence: 0.75
+  evidence: POST /search/batch/ createBatchScreening 'Create a batch screening'; schema 'BatchScreeningRecord';
+    description 'sanctions, PEP ... screening for AML compliance'
+  reason: Bulk screening of customer records against sanctions and PEP lists is a regulatory (AML) compliance
+    control. Batch mechanics are the delivery mode, not the meaning; the substance is sanctions screening,
+    mapped to Regulatory Compliance Management.
+- tag: Monitoring
+  spec_file: sanctions-io-monitoring-api-openapi.yml
+  capability_id: BC-130.10
+  capability_id_l1: BC-130
+  capability_name: Regulatory Compliance Management
+  confidence: 0.75
+  evidence: POST /monitoring/ createMonitoringEntry 'Create a monitoring entry'; GET /monitoring/result/{monitoring_result_id}/
+    'Get a monitoring result'; schema 'MonitoringEntryCreate'
+  reason: 'Despite the homographic tag, this is not IT observability: entries are screened subjects placed
+    under ongoing AML watchlist monitoring, with results to review. That is ongoing-due-diligence regulatory
+    compliance.'
+- tag: Adverse Media
+  spec_file: sanctions-io-adverse-media-api-openapi.yml
+  capability_id: BC-130.10
+  capability_id_l1: BC-130
+  capability_name: Regulatory Compliance Management
+  confidence: 0.7
+  evidence: 'GET /search/media/ searchAdverseMedia ''Search adverse media''; spec description: ''screening
+    for AML compliance'''
+  reason: Adverse-media search is an AML/KYC due-diligence check performed to satisfy anti-money-laundering
+    regulation; in this candidate set that is Regulatory Compliance Management. No financial-crime-specific
+    capability exists in the frame, so the generic compliance L2 is used with moderate confidence.
