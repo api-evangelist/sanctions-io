@@ -116,37 +116,6 @@ components:
       properties:
         detail:
           type: string
-    ScreeningResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-        next:
-          type:
-          - string
-          - 'null'
-        previous:
-          type:
-          - string
-          - 'null'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreeningMatch'
-        search:
-          type: object
-          properties:
-            params:
-              type: object
-            timestamp:
-              type: string
-              format: date-time
-            api_version:
-              type: string
-              example: '2.3'
-            id:
-              type: string
-              format: uuid
     ScreeningMatch:
       type: object
       properties:
@@ -196,15 +165,37 @@ components:
         data_hash:
           type: string
           description: Changes when the underlying record changes.
-  parameters:
-    acceptVersion:
-      name: Accept
-      in: header
-      required: false
-      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
-      schema:
-        type: string
-        example: application/json; version=2.3
+    ScreeningResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type:
+          - string
+          - 'null'
+        previous:
+          type:
+          - string
+          - 'null'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningMatch'
+        search:
+          type: object
+          properties:
+            params:
+              type: object
+            timestamp:
+              type: string
+              format: date-time
+            api_version:
+              type: string
+              example: '2.3'
+            id:
+              type: string
+              format: uuid
   responses:
     Unauthorized:
       description: Authentication credentials were not provided or are invalid.
@@ -214,6 +205,15 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             detail: Authentication credentials were not provided.
+  parameters:
+    acceptVersion:
+      name: Accept
+      in: header
+      required: false
+      description: Selects the API version, e.g. "application/json; version=2.3". Without the header, version 1.0 is used by default.
+      schema:
+        type: string
+        example: application/json; version=2.3
   securitySchemes:
     bearerAuth:
       type: http
